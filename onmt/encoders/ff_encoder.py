@@ -47,7 +47,7 @@ class FeedForwardEncoder(EncoderBase):
         self.embeddings = embeddings
         self.size = size
         self.encode_layers = FeedForwardEncoderLayers(embeddings.embedding_size, size, num_layers)
-        self.attention = MultiHeadedAttention(heads, embeddings.embedding_size)
+        # self.attention = MultiHeadedAttention(heads, embeddings.embedding_size)
 
     @classmethod
     def from_opt(cls, opt, embeddings):
