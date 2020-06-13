@@ -67,9 +67,9 @@ class FeedForwardEncoder(EncoderBase):
         # mask = pad_mask(src, self.embeddings.word_padding_idx)
         # print("mask shape", mask.shape)
 
-        context, _ = self.attention(emb, emb, emb, attn_type="self")
-        print("context shape", context.shape)
-        out = self.encode_layers(context)
+        # context, _ = self.attention(emb, emb, emb, attn_type="self")
+
+        out = self.encode_layers(emb)
 
         final_state = out.mean(dim = 0).unsqueeze(0)
 
