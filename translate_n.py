@@ -3,11 +3,12 @@ from onmt.bin.translate import translate, _get_parser
 import sys
 
 if __name__ == "__main__":
-    max_steps = int(sys.argv[2])
+    start = int(sys.argv[2])
+    end = int(sys.argv[3])
     exp = sys.argv[1]
-    sys.argv = [sys.argv[0], "--config", "translate.cfg"]
-    print("exp-{} max_steps-{}".format(exp, max_steps))
-    for steps in range(1, max_steps+1):
+    sys.argv = [sys.argv[0], "--config", "translate{}.cfg".format(exp)]
+    print("exp-{} start-{} end-{}".format(exp, start, end))
+    for steps in range(start, end+1):
         steps *= 1000
         parser = _get_parser()
         opt = parser.parse_args()
