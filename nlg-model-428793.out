@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "train.py", line 2, in <module>
+    from onmt.bin.train import main
+  File "/uoa/home/t03zz19/data-to-text-hierarchical/onmt/__init__.py", line 4, in <module>
+    import onmt.inputters
+  File "/uoa/home/t03zz19/data-to-text-hierarchical/onmt/inputters/__init__.py", line 6, in <module>
+    from onmt.inputters.inputter import \
+  File "/uoa/home/t03zz19/data-to-text-hierarchical/onmt/inputters/inputter.py", line 10, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'

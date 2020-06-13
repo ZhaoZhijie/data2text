@@ -81,7 +81,7 @@ class Statistics(object):
         self.loss += stat.loss
         self.n_words += stat.n_words
         self.n_correct += stat.n_correct
-
+        #print("n_words:", stat.n_words, "n_correct:",stat.n_correct)
         if update_n_src_words:
             self.n_src_words += stat.n_src_words
 
@@ -109,6 +109,7 @@ class Statistics(object):
            n_batch (int): total batches
            start (int): start time of step.
         """
+        #print("total_n_words:", self.n_words, "total_n_correct:",self.n_correct)
         t = self.elapsed_time()
         step_fmt = "%2d" % step
         if num_steps > 0:

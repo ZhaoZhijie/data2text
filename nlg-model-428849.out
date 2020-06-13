@@ -1,0 +1,13 @@
+cuda is available
+gpu device count is  1
+current_device is  0
+Traceback (most recent call last):
+  File "train.py", line 19, in <module>
+    main()
+  File "/uoa/home/t03zz19/data-to-text-hierarchical/onmt/bin/train.py", line 204, in main
+    train(opt)
+  File "/uoa/home/t03zz19/data-to-text-hierarchical/onmt/bin/train.py", line 35, in train
+    vocab = torch.load(opt.data + '.vocab.pt')
+  File "/uoa/home/t03zz19/zzjenv/lib/python3.7/site-packages/torch/serialization.py", line 382, in load
+    f = open(f, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: 'experiments/exp-1/data/data.vocab.pt'

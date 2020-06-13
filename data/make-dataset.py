@@ -18,7 +18,7 @@ import argparse
 
 
 # OpenNMT has a fancy pipe
-DELIM = "￨"
+DELIM = "|"
 
 # I manually checked and there are at most 24 elements in an entity
 ENT_SIZE = 24
