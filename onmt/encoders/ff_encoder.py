@@ -79,7 +79,6 @@ class FeedForwardEncoder(EncoderBase):
         # context, _ = self.attention(emb, emb, emb, attn_type="self")
 
         out = self.encode_layers(emb)
-        print("complete--------------------")
 
         final_state = out.mean(dim = 0).unsqueeze(0)
 
