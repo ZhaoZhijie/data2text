@@ -13,6 +13,7 @@ class FeedForwardEncoderLayers(torch.nn.Module):
         input_size = input_size
         for i in range(layers_num):
             self.layers.append(torch.nn.Linear(input_size, units))
+            input_size = units
             self.dropout.append(torch.nn.Dropout(dropout))
         input_size = units
 
@@ -78,6 +79,7 @@ class FeedForwardEncoder(EncoderBase):
         # context, _ = self.attention(emb, emb, emb, attn_type="self")
 
         out = self.encode_layers(emb)
+        print("complete--------------------")
 
         final_state = out.mean(dim = 0).unsqueeze(0)
 
