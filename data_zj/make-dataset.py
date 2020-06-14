@@ -73,7 +73,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     names = ["train", "valid", "test"]
     for name in names:
-        datapath = f'data/rotowire/{name}.json'
+        datapath = f'data_zj/rotowire/{name}.json'
         with open(datapath, "r", encoding="utf-8") as f:
             txt = f.read()
             dataset = json.loads(txt)
