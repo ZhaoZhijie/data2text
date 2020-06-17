@@ -65,7 +65,7 @@ class FeedForwardEncoder(EncoderBase):
             opt.enc_rnn_size,
             opt.heads,
             embeddings,
-            opt.dropout[1] if type(opt.dropout) is list else opt.dropout)
+            opt.dropout[0] if type(opt.dropout) is list else opt.dropout)
 
     def forward(self, src, lengths=None):
         """See :func:`EncoderBase.forward()`"""
