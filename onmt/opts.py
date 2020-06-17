@@ -498,6 +498,8 @@ def train_opts(parser):
                    "max_grad_norm")
     group.add('--dropout', '-dropout', type=float, default=[0.3], nargs='+',
               help="Dropout probability; applied in LSTM stacks.")
+    group.add('--encoder_dropout', '-encoder_dropout', type=float, default=[0.3], nargs='+',
+              help="Dropout probability; applied in ff_encoder.")
     group.add('--attention_dropout', '-attention_dropout', type=float,
               default=[0.1], nargs='+',
               help="Attention Dropout probability.")
