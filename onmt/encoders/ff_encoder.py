@@ -50,10 +50,11 @@ class FeedForwardEncoder(EncoderBase):
         * memory_bank ``(src_len, batch_size, model_dim)``
     """
 
-    def __init__(self, num_layers, size, heads, embeddings, dropout):
+    def __init__(self, num_layers, dec_layer_num, size, heads, embeddings, dropout):
         super(FeedForwardEncoder, self).__init__()
         self.embeddings = embeddings
         self.size = size
+        self.dec_layer_num = dec_layer_num
         self.encode_layers = FeedForwardEncoderLayers(embeddings.embedding_size, size, num_layers, dropout)
         # self.attention = MultiHeadedAttention(heads, embeddings.embedding_size)
 
@@ -62,6 +63,7 @@ class FeedForwardEncoder(EncoderBase):
         """Alternate constructor."""
         return cls(
             opt.enc_layers,
+            opt.dec_layers,
             opt.enc_rnn_size,
             opt.heads,
             embeddings,
@@ -80,7 +82,7 @@ class FeedForwardEncoder(EncoderBase):
 
         out = self.encode_layers(emb)
 
-        final_state = out.mean(dim = 0).unsqueeze(0)
+        final_state = out.mean(dim = 0).unsqueeze(0).repeat(self.dec_layer_num,1,1)
 
         return (final_state, final_state), out, lengths
 
