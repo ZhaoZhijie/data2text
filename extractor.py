@@ -630,9 +630,9 @@ def main():
         loss = torch.tensor(0.0).to(device)
         model.train()
         with torch.no_grad():
-        model[0][0].weight[word_pad].zero_()
-        model[0][1].weight[ent_dist_pad].zero_()
-        model[0][2].weight[num_dist_pad].zero_()
+            model[0][0].weight[word_pad].zero_()
+            model[0][1].weight[ent_dist_pad].zero_()
+            model[0][2].weight[num_dist_pad].zero_()
         
         for j in range(len(trbatches)):#
             model.zero_grad()
@@ -646,25 +646,21 @@ def main():
             loss_.backward()
             with torch.no_grad():
                 loss += loss_
-                if opt.lstm:
-                    model[0][0].weight.grad[word_pad].zero_()
-                    model[0][1].weight.grad[ent_dist_pad].zero_()
-                    model[0][2].weight.grad[num_dist_pad].zero_()
-                    nn.utils.clip_grad_norm_(model.parameters(), 5, 2)
-                    
-                for p in model.parameters():
-                    p.add_(-opt.lr*p.grad)
-                    pass
+            if opt.lstm:
+                model[0][0].weight.grad[word_pad].zero_()
+                model[0][1].weight.grad[ent_dist_pad].zero_()
+                model[0][2].weight.grad[num_dist_pad].zero_()
+                nn.utils.clip_grad_norm_(model.parameters(), 5, 2)
 
-                # optimizer.step()
-                
-                model[0][0].weight[word_pad].zero_()
-                model[0][1].weight[ent_dist_pad].zero_()
-                model[0][2].weight[num_dist_pad].zero_()
-            #save the best
+            for p in model.parameters():
+                p.add_(-opt.lr*p.grad)
 
-        logger.info("train loss:{}".format(loss/len(trbatches)))     
+            # optimizer.step()
+            model[0][0].weight[word_pad].zero_()
+            model[0][1].weight[ent_dist_pad].zero_()
+            model[0][2].weight[num_dist_pad].zero_()
 
+        logger.info("train loss:{}".format(loss/len(trbatches)))
         acc, rec = get_multilabel_acc(model, valbatches, opt.ignore_idx)
         logger.info("acc:{}".format(acc))
 
