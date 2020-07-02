@@ -131,13 +131,14 @@ parser.add('-lstm', '--lstm', default=False, help='use a BLSTM rather than a con
 parser.add('-geom', '--geom', default=False, help='average models geometrically')
 parser.add('-test', '--test', default=False, help='use test data')
 
+opt = parser.parse_args()
 if torch.cuda.is_available():
   print("gpu is ok")
   device = torch.device("cuda")
 else:
   device = torch.device("cpu")
 
-# opt = parser.parse_args()
+
 #为了测试方便这里将参数直接赋值
 class Args():
   def __init__(self):
@@ -626,7 +627,7 @@ def main():
 
     best_acc = 0
     for i in range(opt.epochs):
-        print("epoch", i+1, "lr:", opt.lr)
+        logger.info("epoch {} lr {}".format(i+1, opt.lr))
         loss = torch.tensor(0.0).to(device)
         model.train()
         with torch.no_grad():
@@ -634,7 +635,7 @@ def main():
             model[0][1].weight[ent_dist_pad].zero_()
             model[0][2].weight[num_dist_pad].zero_()
         
-        for j in range(len(trbatches)):#
+        for j in range(len(trbatches)):#len(trbatches)
             model.zero_grad()
             # optimizer.zero_grad()
             sent = trbatches[j]["sent"].to(device)
@@ -646,35 +647,35 @@ def main():
             loss_.backward()
             with torch.no_grad():
                 loss += loss_
-            if opt.lstm:
-                model[0][0].weight.grad[word_pad].zero_()
-                model[0][1].weight.grad[ent_dist_pad].zero_()
-                model[0][2].weight.grad[num_dist_pad].zero_()
-                nn.utils.clip_grad_norm_(model.parameters(), 5, 2)
+                if opt.lstm:
+                    model[0][0].weight.grad[word_pad].zero_()
+                    model[0][1].weight.grad[ent_dist_pad].zero_()
+                    model[0][2].weight.grad[num_dist_pad].zero_()
+                    nn.utils.clip_grad_norm_(model.parameters(), 5, 2)
 
-            for p in model.parameters():
-                p.add_(-opt.lr*p.grad)
+                for p in model.parameters():
+                    p.add_(-opt.lr*p.grad)
 
-            # optimizer.step()
-            model[0][0].weight[word_pad].zero_()
-            model[0][1].weight[ent_dist_pad].zero_()
-            model[0][2].weight[num_dist_pad].zero_()
+                # optimizer.step()
+                model[0][0].weight[word_pad].zero_()
+                model[0][1].weight[ent_dist_pad].zero_()
+                model[0][2].weight[num_dist_pad].zero_()
 
         logger.info("train loss:{}".format(loss/len(trbatches)))
         acc, rec = get_multilabel_acc(model, valbatches, opt.ignore_idx)
         logger.info("acc:{}".format(acc))
 
         if acc > best_acc:
-        savefi = "{}.pt".format(opt.savefile)
-        logger.info("saving best to {}".format(savefi))
-        torch.save(model.state_dict(), savefi)
-        best_acc = acc
+            savefi = "{}.pt".format(opt.savefile)
+            logger.info("saving best to {}".format(savefi))
+            torch.save(model.state_dict(), savefi)
+            best_acc = acc
         
 
         valloss = -acc
         if valloss >= prev_loss:
             opt.lr = opt.lr*opt.lr_decay
-            prev_loss = valloss
+        prev_loss = valloss
 
 if __name__ == "__main__":
     main()
