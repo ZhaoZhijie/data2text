@@ -8,11 +8,12 @@ from onmt.encoders.audio_encoder import AudioEncoder
 from onmt.encoders.image_encoder import ImageEncoder
 from onmt.encoders.hierarchical_transformer import HierarchicalTransformerEncoder
 from onmt.encoders.ff_encoder import FeedForwardEncoder
+from onmt.encoders.dense_encoder import FeedForwardEncoder as DenseEncoder
 
 str2enc = {"rnn": RNNEncoder, "brnn": RNNEncoder, "cnn": CNNEncoder,
            "transformer": TransformerEncoder, "img": ImageEncoder,
            "audio": AudioEncoder, "mean": MeanEncoder, "htransformer": HierarchicalTransformerEncoder,
-           "feedforward":FeedForwardEncoder}
+           "feedforward":FeedForwardEncoder, "dense":DenseEncoder}
 
 __all__ = ["EncoderBase", "TransformerEncoder", "RNNEncoder", "CNNEncoder",
-           "MeanEncoder", "str2enc", "HierarchicalTransformerEncoder", "feedforward"]
+           "MeanEncoder", "str2enc", "HierarchicalTransformerEncoder", "feedforward", "dense"]
