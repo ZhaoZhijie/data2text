@@ -667,11 +667,9 @@ def main():
         acc, rec = get_multilabel_acc(model, valbatches, opt.ignore_idx)
         logger.info("acc:{}".format(acc))
 
-        if acc > best_acc:
-            savefi = "{}.pt".format(opt.savefile)
-            logger.info("saving best to {}".format(savefi))
-            torch.save(model.state_dict(), savefi)
-            best_acc = acc
+        savefi = "{}-ep{}-{}-{}.pt".format(opt.savefile, i, acc, rec)
+        logger.info("saving to {}".format(savefi))
+        torch.save(model.state_dict(), savefi)
         
 
         valloss = -acc
