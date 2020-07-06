@@ -448,8 +448,8 @@ def get_args(sent, ent_dists, num_dists, dict_):
     return idxstostring(entwrds, dict_), idxstostring(numwrds, dict_)
 
 def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
-    ivocab = get_dict(opt.dict_pfx+".dict", True)
-    ilabels = get_dict(opt.dict_pfx+".labels", True)
+    ivocab, _ = get_dict(opt.dict_pfx+".dict", True)
+    ilabels, _ = get_dict(opt.dict_pfx+".labels", True)
     tupfile = open(opt.preddata+"-tuples.txt", 'w')
     print("ignoreIdx {} ilabels len {}".format(ignoreIdx, len(ilabels)))
     if ignoreIdx:
