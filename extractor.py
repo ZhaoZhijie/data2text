@@ -429,11 +429,14 @@ def get_multilabel_acc(model, valbatches, ignoreIdx, convens=None, lstmens=None)
     model.train()
     return acc, rec
 
-def idxstostring(t, dict):
+def idxstostring(t, dict_):
     strtbl = []
     forlimit = t.size and t.size(0) or len(t)
     for i in range(forlimit):
-        strtbl.append(dict[int(t[i])])
+        key = int(t[i])
+        if key not in dict_.keys():
+            print("invalid key {} \n keys {}".format(key dict_.keys()))
+        strtbl.append(dict_[int(t[i])])
     return ' '.join(strtbl)
 
 def get_args(sent, ent_dists, num_dists, dict_):
