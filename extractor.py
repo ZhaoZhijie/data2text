@@ -248,7 +248,7 @@ def prep_data(batchsize):
     tr_batches = make_batches(trsents, trlens, trentdists, trnumdists, trlabels)
     val_batches = make_batches(valsents, vallens, valentdists, valnumdists, vallabels, vallabelnums)
     pred_batches = None
-    if psents:
+    if isinstance(psents, torch.Tensor):
         pred_batches = make_batches(psents, plens, pentdists, pnumdists, plabels, plabelnums)
     # gc.collect()
     return tr_batches, val_batches, (word_pad, ent_dist_pad, num_dist_pad), nlabels, pred_batches, pboxrestartidxs
