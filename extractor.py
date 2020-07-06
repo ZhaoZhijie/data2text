@@ -663,17 +663,14 @@ def main():
                 model[0][1].weight[ent_dist_pad].zero_()
                 model[0][2].weight[num_dist_pad].zero_()
 
-        logger.info("train loss:{}".format(loss/len(trbatches)))
+        logger.info("train loss:{}".format(loss.item()/len(trbatches)))
         acc, rec = get_multilabel_acc(model, valbatches, opt.ignore_idx)
-        logger.info("acc:{}".format(acc))
+        logger.info("acc:{}".format(acc.item()))
 
-        if acc > best_acc:
-            savefi = "{}.pt".format(opt.savefile)
-            logger.info("saving best to {}".format(savefi))
-            torch.save(model.state_dict(), savefi)
-            best_acc = acc
+        savefi = "{}-ep{}-{}-{}.pt".format(opt.savefile, i, acc.item(), rec.item())
+        logger.info("saving to {}".format(savefi))
+        torch.save(model.state_dict(), savefi)
         
-
         valloss = -acc
         if valloss >= prev_loss:
             opt.lr = opt.lr*opt.lr_decay
