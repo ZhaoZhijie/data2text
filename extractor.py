@@ -431,7 +431,7 @@ def get_multilabel_acc(model, valbatches, ignoreIdx, convens=None, lstmens=None)
 
 def idxstostring(t, dict):
     strtbl = []
-    forlimit = t.size and t.size(1) or len(t)
+    forlimit = t.size and t.size(0) or len(t)
     for i in range(forlimit):
         strtbl.append(dict[t[i]])
     return ' '.join(strtbl)
