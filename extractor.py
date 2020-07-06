@@ -456,7 +456,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         assert ilabels[str(ignoreIdx)] == "NONE"
 
     boxRestarts = None
-    if boxrestartidxs:
+    if isinstance(boxrestartidxs, torch.Tensor):
         boxRestarts = {}
         assert boxrestartidxs.dim() == 1
         for i in range(boxrestartidxs.size(0)):
