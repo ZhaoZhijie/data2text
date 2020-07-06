@@ -526,7 +526,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         
         for k in range(sent.size(0)):
             candNum = candNum + 1
-            if boxRestarts and boxRestarts[candNum]:
+            if boxRestarts and candNum in boxRestarts.keys():
                 tupfile.write("\n")
                 seen = {}
             if not ignoreIdx or in_denominator[k] != ignoreIdx:
