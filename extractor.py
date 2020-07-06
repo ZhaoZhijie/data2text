@@ -109,36 +109,35 @@ class Transpose(nn.Module):
 parser = ArgumentParser(description='extractor.py')
 
 parser.add('-datafile', '--datafile', default='roto-ie.h5', help='path to hdf5 file containing train/val data')
-parser.add('-batchsize', '--batchsize', default=32, type=int, help='batch size')
-parser.add('-embed_size', '--embed_size', default=200, type=int, help='size of embeddings')
-parser.add('-num_filters', '--num_filters', default=200, type=int, help='number of convolutional filters')
-parser.add('-conv_fc_layer_size', '--conv_fc_layer_size', default=500, type=int, help='size of fully connected layer in convolutional model')
-parser.add('-blstm_fc_layer_size', '--blstm_fc_layer_size', default=700, type=int, help='size of fully connected layer in BLSTM model')
-parser.add('-dropout', '--dropout', default=0.5, type=float, help='dropout rate')
-parser.add('-uniform_init', '--uniform_init', default=0.1, type=float, help='init in params in this range')
-parser.add('-lr', '--lr', default=0.7, type=float, help='learning rate')
-parser.add('-lr_decay', '--lr_decay', default=0.5, type=float, help='decay factor')
+parser.add('-batchsize', '--batchsize', default=32, help='batch size')
+parser.add('-embed_size', '--embed_size', default=200, help='size of embeddings')
+parser.add('-num_filters', '--num_filters', default=200, help='number of convolutional filters')
+parser.add('-conv_fc_layer_size', '--conv_fc_layer_size', default=500, help='size of fully connected layer in convolutional model')
+parser.add('-blstm_fc_layer_size', '--blstm_fc_layer_size', default=700, help='size of fully connected layer in BLSTM model')
+parser.add('-dropout', '--dropout', default=0.5, help='dropout rate')
+parser.add('-uniform_init', '--uniform_init', default=0.1, help='init in params in this range')
+parser.add('-lr', '--lr', default=0.7, help='learning rate')
+parser.add('-lr_decay', '--lr_decay', default=0.5, help='decay factor')
 parser.add('-clip', '--clip', default=5, help='clip grads so they do not exceed this')
-parser.add('-seed', '--seed', default=3435, type=int, help='Random seed')
-parser.add('-epochs', '--epochs', default=10, type=int, help='training epochs')
-parser.add('-gpuid', '--gpuid', default=1, type=int, help='gpu idx')
+parser.add('-seed', '--seed', default=3435, help='Random seed')
+parser.add('-epochs', '--epochs', default=10, help='training epochs')
+parser.add('-gpuid', '--gpuid', default=1, help='gpu idx')
 parser.add('-savefile', '--savefile', default='', help='path to save model to')
 parser.add('-preddata', '--preddata', default='', help='path to hdf5 file containing candidate relations from generated data')
 parser.add('-dict_pfx', '--dict_pfx', default='', help='prefix of .dict and .labels files')
-parser.add('-ignore_idx', '--ignore_idx', default=11, type=int, help='idx of NONE class in *.labels file')
-parser.add('-just_eval', '--just_eval', default=False, action="store_true", help='just eval generations')
-parser.add('-lstm', '--lstm', default=False, action="store_true", help='use a BLSTM rather than a convolutional model')
-parser.add('-geom', '--geom', default=False, action="store_true", help='average models geometrically')
-parser.add('-test', '--test', default=False, action="store_true", help='use test data')
+parser.add('-ignore_idx', '--ignore_idx', default=11, help='idx of NONE class in *.labels file')
+parser.add('-just_eval', '--just_eval', default=False, help='just eval generations')
+parser.add('-lstm', '--lstm', default=False, help='use a BLSTM rather than a convolutional model')
+parser.add('-geom', '--geom', default=False, help='average models geometrically')
+parser.add('-test', '--test', default=False, help='use test data')
 
-opt = parser.parse_args()
 if torch.cuda.is_available():
   print("gpu is ok")
   device = torch.device("cuda")
 else:
   device = torch.device("cpu")
 
-
+# opt = parser.parse_args()
 #为了测试方便这里将参数直接赋值
 class Args():
   def __init__(self):
@@ -602,8 +601,9 @@ def main():
                 mod.load_state_dict(torch.load(lstmens_paths[j]))
                 mod.to(device)
                 lstmens.append(mod)
+        
         eval_gens(pred_batches, opt.ignore_idx, pboxrestartidxs, convens, lstmens)
-        sys.exit()
+        return
 
     model = None
     if opt.lstm:
@@ -629,15 +629,15 @@ def main():
 
     best_acc = 0
     for i in range(opt.epochs):
-        logger.info("epoch {} lr {}".format(i+1, opt.lr))
+        print("epoch", i+1, "lr:", opt.lr)
         loss = torch.tensor(0.0).to(device)
         model.train()
         with torch.no_grad():
-            model[0][0].weight[word_pad].zero_()
-            model[0][1].weight[ent_dist_pad].zero_()
-            model[0][2].weight[num_dist_pad].zero_()
+        model[0][0].weight[word_pad].zero_()
+        model[0][1].weight[ent_dist_pad].zero_()
+        model[0][2].weight[num_dist_pad].zero_()
         
-        for j in range(len(trbatches)):#len(trbatches)
+        for j in range(len(trbatches)):#
             model.zero_grad()
             # optimizer.zero_grad()
             sent = trbatches[j]["sent"].to(device)
@@ -654,28 +654,30 @@ def main():
                     model[0][1].weight.grad[ent_dist_pad].zero_()
                     model[0][2].weight.grad[num_dist_pad].zero_()
                     nn.utils.clip_grad_norm_(model.parameters(), 5, 2)
-
+                    
                 for p in model.parameters():
                     p.add_(-opt.lr*p.grad)
 
                 # optimizer.step()
+                
                 model[0][0].weight[word_pad].zero_()
                 model[0][1].weight[ent_dist_pad].zero_()
                 model[0][2].weight[num_dist_pad].zero_()
+            #save the best
 
-        logger.info("train loss:{}".format(loss/len(trbatches)))
+        logger.info("train loss:{}".format(loss.item()/len(trbatches)))     
+
         acc, rec = get_multilabel_acc(model, valbatches, opt.ignore_idx)
-        logger.info("acc:{}".format(acc))
+        logger.info("acc:{}".format(acc.item()))
 
-        savefi = "{}-ep{}-{}-{}.pt".format(opt.savefile, i, acc, rec)
+        savefi = "{}-ep{}-{}-{}.pt".format(opt.savefile, i, acc.item(), rec.item())
         logger.info("saving to {}".format(savefi))
         torch.save(model.state_dict(), savefi)
         
-
         valloss = -acc
         if valloss >= prev_loss:
             opt.lr = opt.lr*opt.lr_decay
-        prev_loss = valloss
+            prev_loss = valloss
 
 if __name__ == "__main__":
     main()
