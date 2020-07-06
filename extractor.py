@@ -206,18 +206,18 @@ def prep_data(batchsize):
 
     #need to shift negative distances...
     min_entdist = torch.min(trentdists.min(), valentdists.min())
-    if pentdists:
+    if isinstance(pentdists, torch.Tensor):
         pentdists.clamp_(min_entdist, trentdists.max())
     min_numdist = torch.min(trnumdists.min(), valnumdists.min())
-    if pentdists:
+    if isinstance(pentdists, torch.Tensor):
         pnumdists.clamp_(min_numdist, trnumdists.max())
     trentdists.add_(-min_entdist)
     valentdists.add_(-min_entdist)
-    if pentdists:
+    if isinstance(pentdists, torch.Tensor):
         pentdists.add_(-min_entdist)
     trnumdists.add_(-min_numdist)
     valnumdists.add_(-min_numdist)
-    if pnumdists:
+    if isinstance(pnumdists, torch.Tensor):
         pnumdists.add_(-min_numdist)
 
     nlabels = trlabels.max().item() + 1
