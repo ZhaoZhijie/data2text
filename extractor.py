@@ -433,7 +433,7 @@ def idxstostring(t, dict):
     strtbl = []
     forlimit = t.size and t.size(0) or len(t)
     for i in range(forlimit):
-        strtbl.append(dict[t[i].item()])
+        strtbl.append(dict[int(t[i])])
     return ' '.join(strtbl)
 
 def get_args(sent, ent_dists, num_dists, dict_):
@@ -460,7 +460,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         boxRestarts = {}
         assert boxrestartidxs.dim() == 1
         for i in range(boxrestartidxs.size(0)):
-            boxRestarts[boxrestartidxs[i].item()] = True
+            boxRestarts[int(boxrestartidxs[i])] = True
 
     if convens:
         for j in range(len(convens)):
@@ -528,8 +528,8 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
             if not ignoreIdx or in_denominator[k] != ignoreIdx:
                 sentstr = idxstostring(sent[k], ivocab)
                 entarg, numarg = get_args(sent[k], ent_dists[k], num_dists[k], ivocab)
-                predkey = entarg + numarg + ilabels[g_argmaxes[k].item()]
-                tupfile.write(entarg + '|' + numarg + '|' + ilabels[g_argmaxes[k].item()] + '\n')
+                predkey = entarg + numarg + ilabels[int(g_argmaxes[k])]
+                tupfile.write(entarg + '|' + numarg + '|' + ilabels[int(g_argmaxes[k])] + '\n')
                 if g_correct_buf[k, 0] > 0:
                     if seen[predkey]:
                         ndupcorrects = ndupcorrects + 1
