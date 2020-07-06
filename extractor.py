@@ -433,7 +433,7 @@ def idxstostring(t, dict):
     strtbl = []
     forlimit = t.size and t.size(1) or len(t)
     for i in range(forlimit):
-        strtbl.append(dict[t[i]])
+        strtbl.append(dict[str(t[i])])
     return ' '.join(strtbl)
 
 def get_args(sent, ent_dists, num_dists, dict_):
@@ -453,7 +453,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     tupfile = open(opt.preddata+"-tuples.txt", 'w')
     print("ignoreIdx {} ilabels len {}".format(ignoreIdx, len(ilabels)))
     if ignoreIdx:
-        assert ilabels[ignoreIdx] == "NONE"
+        assert ilabels[str(ignoreIdx)] == "NONE"
 
     boxRestarts = None
     if boxrestartidxs:
@@ -528,8 +528,8 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
             if not ignoreIdx or in_denominator[k] != ignoreIdx:
                 sentstr = idxstostring(sent[k], ivocab)
                 entarg, numarg = get_args(sent[k], ent_dists[k], num_dists[k], ivocab)
-                predkey = entarg + numarg + ilabels[g_argmaxes[k]]
-                tupfile.write(entarg + '|' + numarg + '|' + ilabels[g_argmaxes[k]] + '\n')
+                predkey = entarg + numarg + ilabels[str(g_argmaxes[k].item())]
+                tupfile.write(entarg + '|' + numarg + '|' + ilabels[str(g_argmaxes[k]).item()] + '\n')
                 if g_correct_buf[k, 0] > 0:
                     if seen[predkey]:
                         ndupcorrects = ndupcorrects + 1
