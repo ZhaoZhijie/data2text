@@ -633,9 +633,9 @@ def main():
         loss = torch.tensor(0.0).to(device)
         model.train()
         with torch.no_grad():
-        model[0][0].weight[word_pad].zero_()
-        model[0][1].weight[ent_dist_pad].zero_()
-        model[0][2].weight[num_dist_pad].zero_()
+            model[0][0].weight[word_pad].zero_()
+            model[0][1].weight[ent_dist_pad].zero_()
+            model[0][2].weight[num_dist_pad].zero_()
         
         for j in range(len(trbatches)):#
             model.zero_grad()
