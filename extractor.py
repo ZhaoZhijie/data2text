@@ -262,7 +262,7 @@ def get_dict(finame, invert=False):
         if line != "":
             pieces = line.split()
             if invert:
-                dict_[pieces[1]] = pieces[0]
+                dict_[int(pieces[1])] = pieces[0]
             else:
                 dict_[pieces[0]] = int(pieces[1])
             dict_size += 1
@@ -433,7 +433,7 @@ def idxstostring(t, dict):
     strtbl = []
     forlimit = t.size and t.size(1) or len(t)
     for i in range(forlimit):
-        strtbl.append(dict[str(t[i])])
+        strtbl.append(dict[t[i]])
     return ' '.join(strtbl)
 
 def get_args(sent, ent_dists, num_dists, dict_):
@@ -453,14 +453,14 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     tupfile = open(opt.preddata+"-tuples.txt", 'w')
     print("ignoreIdx {} ilabels len {}".format(ignoreIdx, len(ilabels)))
     if ignoreIdx:
-        assert ilabels[str(ignoreIdx)] == "NONE"
+        assert ilabels[ignoreIdx] == "NONE"
 
     boxRestarts = None
     if isinstance(boxrestartidxs, torch.Tensor):
         boxRestarts = {}
         assert boxrestartidxs.dim() == 1
         for i in range(boxrestartidxs.size(0)):
-            boxRestarts[boxrestartidxs[i]] = True
+            boxRestarts[boxrestartidxs[i].item()] = True
 
     if convens:
         for j in range(len(convens)):
@@ -528,8 +528,8 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
             if not ignoreIdx or in_denominator[k] != ignoreIdx:
                 sentstr = idxstostring(sent[k], ivocab)
                 entarg, numarg = get_args(sent[k], ent_dists[k], num_dists[k], ivocab)
-                predkey = entarg + numarg + ilabels[str(g_argmaxes[k].item())]
-                tupfile.write(entarg + '|' + numarg + '|' + ilabels[str(g_argmaxes[k]).item()] + '\n')
+                predkey = entarg + numarg + ilabels[g_argmaxes[k].item()]
+                tupfile.write(entarg + '|' + numarg + '|' + ilabels[g_argmaxes[k].item()] + '\n')
                 if g_correct_buf[k, 0] > 0:
                     if seen[predkey]:
                         ndupcorrects = ndupcorrects + 1
