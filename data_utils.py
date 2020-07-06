@@ -469,6 +469,8 @@ def prep_generated_data(genfile, dict_pfx, outfile, path="../boxscore-data/rotow
             labeldict[pieces[0]] = int(pieces[1])
     with codecs.open(genfile, "r", "utf-8") as f:
         gens = f.readlines()
+        if gens[-1] == "":
+            gens.pop(-1)
 
     with codecs.open(os.path.join(path, "train.json"), "r", "utf-8") as f:
         trdata = json.load(f)
