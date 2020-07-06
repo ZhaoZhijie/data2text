@@ -451,7 +451,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     ivocab = get_dict(opt.dict_pfx+".dict", True)
     ilabels = get_dict(opt.dict_pfx+".labels", True)
     tupfile = open(opt.preddata+"-tuples.txt", 'w')
-
+    print("ignoreIdx {} ilabels len {}".format(ignoreIdx, len(ilabels)))
     if ignoreIdx:
         assert ilabels[ignoreIdx] == "NONE"
 
