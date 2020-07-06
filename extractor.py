@@ -672,7 +672,7 @@ def main():
         torch.save(model.state_dict(), savefi)
         
         valloss = -acc
-        if valloss >= prev_loss:
+        if valloss >= prev_loss and opt.lr > 0.0001:
             opt.lr = opt.lr*opt.lr_decay
         prev_loss = valloss
 
