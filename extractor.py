@@ -199,7 +199,7 @@ def prep_data(batchsize):
         pentdists = torch.tensor(np.array(f["valentdists"]))
         pnumdists = torch.tensor(np.array(f["valnumdists"]))
         plabels = torch.tensor(np.array(f["vallabels"]))
-        pboxrestartidxs = torch.tensor(np.array(f["pboxrestartidxs"]))
+        pboxrestartidxs = torch.tensor(np.array(f["boxrestartidxs"]))
         plabelnums = plabels[:, -1]
         plabels = plabels[:,:-1]
         f.close()
