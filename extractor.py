@@ -549,8 +549,8 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     return acc
 
 def set_up_saved_models():
-    convens_paths = ["conv1ie-ep6-94-74.t","conv2ie-ep3-94-60.t","conv3ie-ep8-95-72.t"]
-    lstmens_paths = ["blstm1ie-ep4-93-75.t", "blstm2ie-ep3-93-71.t", "blstm3ie-ep2-94-72.t"]
+    convens_paths = ["eval_models/D1/best/conv15ie-ep19-91-66.pt","eval_models/D1/best/conv16ie-ep17-91-66.pt","eval_models/D1/best/conv17ie-ep12-91-65.pt"]
+    lstmens_paths = []
     opt.embed_size = 200
     opt.num_filters = 200
     opt.conv_fc_layer_size = 500
