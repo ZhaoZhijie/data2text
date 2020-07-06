@@ -534,10 +534,11 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
                 entarg, numarg = get_args(sent[k], ent_dists[k], num_dists[k], ivocab)
                 predkey = entarg + numarg + ilabels[int(g_argmaxes[k])]
                 tupfile.write(entarg + '|' + numarg + '|' + ilabels[int(g_argmaxes[k])] + '\n')
+                seen_tag = predkey in seen.keys()
                 if g_correct_buf[k, 0] > 0:
-                    if seen[predkey]:
+                    if seen_tag:
                         ndupcorrects = ndupcorrects + 1
-                if seen[predkey]:
+                if seen_tag:
                     nduptotal = nduptotal + 1
                 seen[predkey] = True
 
