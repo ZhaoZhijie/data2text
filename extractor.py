@@ -435,7 +435,7 @@ def idxstostring(t, dict_):
     for i in range(forlimit):
         key = int(t[i])
         if key not in dict_.keys():
-            print("invalid key {} \n keys {}".format(key dict_.keys()))
+            print("invalid key {} \n keys {}".format(key, dict_.keys()))
         strtbl.append(dict_[int(t[i])])
     return ' '.join(strtbl)
 
