@@ -44,7 +44,8 @@ def get_ents(dat):
         cities.add(thing["home_city"])
         cities.add(thing["vis_city"])
         players.update(thing["box_score"]["PLAYER_NAME"].values())
-        cities.update(thing["box_score"]["TEAM_CITY"].values())
+        if "TEAM_CITY" in thing["box_score"].keys():
+            cities.update(thing["box_score"]["TEAM_CITY"].values())
 
     for entset in [players, teams, cities]:
         for k in list(entset):
@@ -88,6 +89,7 @@ def extract_entities(sent, all_ents, prons, prev_ents=None, resolve_prons=False,
         players=None, teams=None, cities=None):
     sent_ents = []
     i = 0
+    ents_list = list(all_ents)
     while i < len(sent):
         if sent[i] in prons:
             if resolve_prons:
@@ -103,6 +105,7 @@ def extract_entities(sent, all_ents, prons, prev_ents=None, resolve_prons=False,
         elif sent[i] in all_ents: # findest longest spans; only works if we put in words...
             j = 1
             while i+j <= len(sent) and " ".join(sent[i:i+j]) in all_ents:
+                # print("i:{} j:{} sent[i:i+j]={} ent_i:{} ent_i_j:{}".format(i,j,sent[i:i+j],ents_list[ents_list.index(sent[i])], ents_list[ents_list.index(" ".join(sent[i:i+j]))]))
                 j += 1
             sent_ents.append((i, i+j-1, " ".join(sent[i:i+j-1]), False))
             i += j-1
@@ -152,6 +155,12 @@ def get_player_idx(bs, entname):
     for k, v in bs["PLAYER_NAME"].items():
          if entname == v:
              keys.append(k)
+            #  #判断全名是否都是由第一个第二个名字组合的
+            #  FIRST_NAME = bs["FIRST_NAME"][k]
+            #  SECOND_NAME = bs["SECOND_NAME"][k]
+            #  if bs["PLAYER_NAME"][k] != FIRST_NAME + " " + SECOND_NAME:
+            #      print("名字不是组合的 FIRST {} SECOND {} ALL{}".format(FIRST_NAME, SECOND_NAME, bs["PLAYER_NAME"][k]))
+
     if len(keys) == 0:
         for k,v in bs["SECOND_NAME"].items():
             if entname == v:
@@ -184,12 +193,15 @@ def get_rels(entry, ents, nums, players, teams, cities):
     """
     rels = []
     bs = entry["box_score"]
+    player_list = list(players)
     for i, ent in enumerate(ents):
         if ent[3]: # pronoun
             continue # for now
         entname = ent[2]
         # assume if a player has a city or team name as his name, they won't use that one (e.g., Orlando Johnson)
         if entname in players and entname not in cities and entname not in teams:
+
+            index = player_list.index(entname)
             pidx = get_player_idx(bs, entname)
             for j, numtup in enumerate(nums):
                 found = False
