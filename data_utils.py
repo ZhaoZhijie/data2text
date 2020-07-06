@@ -481,6 +481,7 @@ def prep_generated_data(genfile, dict_pfx, outfile, path="../boxscore-data/rotow
     with codecs.open(os.path.join(path, valfi), "r", "utf-8") as f:
         valdata = json.load(f)
 
+    print("valdata len {}, gens len {}".format(len(valdata), len(gens)))
     assert len(valdata) == len(gens)
 
     nugz = [] # to hold (sentence_tokens, [rels]) tuples
