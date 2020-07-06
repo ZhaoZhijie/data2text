@@ -433,7 +433,7 @@ def idxstostring(t, dict):
     strtbl = []
     forlimit = t.size and t.size(0) or len(t)
     for i in range(forlimit):
-        strtbl.append(dict[t[i]])
+        strtbl.append(dict[t[i].item()])
     return ' '.join(strtbl)
 
 def get_args(sent, ent_dists, num_dists, dict_):
