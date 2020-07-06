@@ -476,11 +476,11 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     ndupcorrects = 0
     nduptotal = 0
     for j in range(len(predbatches)):
-        sent = predbatches[j]["sent"]
-        ent_dists = predbatches[j]["ent_dists"]
-        num_dists = predbatches[j]["num_dists"]
-        labels = predbatches[j]["labels"]
-        labelnums = predbatches[j]["labelnums"]
+        sent = predbatches[j]["sent"].to(device)
+        ent_dists = predbatches[j]["ent_dists"].to(device)
+        num_dists = predbatches[j]["num_dists"].to(device)
+        labels = predbatches[j]["labels"].to(device)
+        labelnums = predbatches[j]["labelnums"].to(device)
         preds = None
 
         if convens:
