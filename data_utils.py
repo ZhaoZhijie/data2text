@@ -270,7 +270,7 @@ def get_datasets(path="./boxscore-data/rotowire"):
     with codecs.open(os.path.join(path, "valid.json"), "r", "utf-8") as f:
         valdata = json.load(f)
 
-    with codecs.open(os.path.join(path, "valid.json"), "r", "utf-8") as f:
+    with codecs.open(os.path.join(path, "test.json"), "r", "utf-8") as f:
         testdata = json.load(f)
         
     extracted_stuff = []
