@@ -106,6 +106,13 @@ class Transpose(nn.Module):
         output = torch.transpose(x, self.dims[0], self.dims[1])
         return output
 
+class LSTMAdapter(nn.Module):
+    def __init__(self):
+        super(LSTMAdapter, self).__init__()
+    
+    def forward(self, x):
+      return x[0]
+
 parser = ArgumentParser(description='extractor.py')
 
 parser.add('-datafile', '--datafile', default='roto-ie.h5', help='path to hdf5 file containing train/val data')
@@ -323,12 +330,11 @@ def make_conv_model(vocab_sizes, emb_sizes, nlabels, opt):
     mod.add_module("SoftMax", SoftMax())
     return mod
 
-
 def make_blstm_model(vocab_sizes, emb_sizes, nlabels, opt):
     par = ParallelTable()
     first_layer_size = 0
 
-    for j in len(vocab_sizes):
+    for j in range(len(vocab_sizes)):
         par.add(nn.Embedding(vocab_sizes[j], emb_sizes[j]))
         first_layer_size = first_layer_size + emb_sizes[j]
     
@@ -338,16 +344,17 @@ def make_blstm_model(vocab_sizes, emb_sizes, nlabels, opt):
 
     mod.add_module("Transpose", Transpose((0,1)))
     mod.add_module("LSTM", nn.LSTM(first_layer_size, first_layer_size, 1, bidirectional=True))
+    mod.add_module("LSTMAdapter", LSTMAdapter())
     mod.add_module("Max", Max(0))
 
-    mod.add(nn.Linear(2*first_layer_size, opt.blstm_fc_layer_size))
-    mod.add(ReLU())
+    mod.add_module("Linear1",nn.Linear(2*first_layer_size, opt.blstm_fc_layer_size))
+    mod.add_module("ReLU",ReLU())
 
     if opt.dropout > 0:
-        mod.add(nn.Dropout(opt.dropout))
+        mod.add_module("Dropout",nn.Dropout(opt.dropout))
 
-    mod.add(nn.Linear(opt.blstm_fc_layer_size, nlabels))
-    mod.add(SoftMax())
+    mod.add_module("Linear2",nn.Linear(opt.blstm_fc_layer_size, nlabels))
+    mod.add_module("SoftMax",SoftMax())
 
     return mod
 
