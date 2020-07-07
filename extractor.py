@@ -165,6 +165,9 @@ class Args():
     self.geom = False
     self.test = False
 
+min_entdist = 0
+min_numdist = 0
+
 def prep_data(batchsize):
     f = h5py.File(opt.datafile, "r")
     trlabels = torch.tensor(np.array(f["trlabels"]))
@@ -203,6 +206,9 @@ def prep_data(batchsize):
         plabelnums = plabels[:, -1]
         plabels = plabels[:,:-1]
         f.close()
+
+    global min_entdist
+    global min_numdist
 
     #need to shift negative distances...
     min_entdist = torch.min(trentdists.min(), valentdists.min())
@@ -441,13 +447,13 @@ def idxstostring(t, dict_):
     return ' '.join(strtbl)
 
 def get_args(sent, ent_dists, num_dists, dict_):
-    min_entdist = ent_dists.min()
-    min_numdist = num_dists.min()
+    global min_entdist
+    global min_numdist
     entwrds, numwrds = [], []
     for i in range(sent.size(0)):
-        if ent_dists[i]+min_entdist-1 == 0:
+        if ent_dists[i]+min_entdist == 0:
             entwrds.append(sent[i])
-        if num_dists[i]+min_numdist-1 == 0:
+        if num_dists[i]+min_numdist == 0:
             numwrds.append(sent[i])
     return idxstostring(entwrds, dict_), idxstostring(numwrds, dict_)
 
@@ -464,7 +470,10 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         boxRestarts = {}
         assert boxrestartidxs.dim() == 1
         for i in range(boxrestartidxs.size(0)):
-            boxRestarts[int(boxrestartidxs[i])] = True
+            idx = int(boxrestartidxs[i])
+            if idx not in boxRestarts.keys():
+                boxRestarts[idx] = 0
+            boxRestarts[idx] += 1
 
     if convens:
         for j in range(len(convens)):
@@ -527,7 +536,9 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         for k in range(sent.size(0)):
             candNum = candNum + 1
             if boxRestarts and candNum in boxRestarts.keys():
-                tupfile.write("\n")
+                for space_num in boxRestarts[canNum]:
+                    tupfile.write("\n")
+                del boxRestarts[canNum]
                 seen = {}
             if not ignoreIdx or in_denominator[k] != ignoreIdx:
                 sentstr = idxstostring(sent[k], ivocab)

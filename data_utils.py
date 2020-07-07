@@ -485,23 +485,27 @@ def prep_generated_data(genfile, dict_pfx, outfile, path="../boxscore-data/rotow
     assert len(valdata) == len(gens)
 
     nugz = [] # to hold (sentence_tokens, [rels]) tuples
-    sent_reset_indices = {0} # sentence indices where a box/story is reset
+    sent_reset_indices = {0:1} # sentence indices where a box/story is reset
     for i, entry in enumerate(valdata):
         summ = gens[i]
         append_candidate_rels(entry, summ, all_ents, prons, players, teams, cities, nugz)
-        sent_reset_indices.add(len(nugz))
-
+        nugz_len = len(nugz)
+        if nugz_len not in sent_reset_indices.keys():
+            sent_reset_indices[nugz_len] = 0
+        sent_reset_indices[nugz_len] += 1
+        #注意有些样本的输出中可能没有提取出relation，那样nugz长度不会增长，这会导致后续评估时判断错误评估输入数据中包含的样本数量，比如旧数据集验证集366号样本
+        # sent_reset_indices.add(len(nugz))
     # save stuff
     max_len = max((len(tup[0]) for tup in nugz))
     psents, plens, pentdists, pnumdists, plabels = [], [], [], [], []
-
     rel_reset_indices = []
     for t, tup in enumerate(nugz):
-        if t in sent_reset_indices: # then last rel is the last of its box
+        if t in sent_reset_indices.keys(): # then last rel is the last of its box
             assert len(psents) == len(plabels)
-            rel_reset_indices.append(len(psents))
+            for k in range(sent_reset_indices[t]):
+                rel_reset_indices.append(len(psents))
+            del sent_reset_indices[t]
         append_multilabeled_data(tup, psents, plens, pentdists, pnumdists, plabels, vocab, labeldict, max_len)
-
     append_labelnums(plabels)
 
     print(len(psents), "prediction examples")
