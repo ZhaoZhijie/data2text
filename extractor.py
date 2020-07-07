@@ -640,7 +640,7 @@ def main():
         for mod in model.modules():
             if hasattr(mod, "weight"):
                 nn.init.uniform_(mod.weight, -opt.uniform_init, opt.uniform_init)
-            if hasattr(mod, "bias"):
+            if hasattr(mod, "bias") and isinstance(mod.bias, torch.Tensor):
                 nn.init.uniform_(mod.bias, -opt.uniform_init, opt.uniform_init)
 
     prev_loss = float('inf')
