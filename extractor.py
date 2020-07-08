@@ -568,6 +568,11 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         correct = correct + g_correct_buf.sum()
         total = total + numpreds
 
+    for k, v in boxRestarts.items():
+        for p in range(v):
+            tupfile.write("\n")
+    print("rel_reset_indices length", len(rel_reset_indices))
+
     acc = correct/total
     logger.info("prec {}".format(acc.item()))
     logger.info("nodup prec {}".format(( correct - ndupcorrects ) / ( total - nduptotal )))
