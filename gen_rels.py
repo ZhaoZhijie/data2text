@@ -30,7 +30,7 @@ step_end = int(sys.argv[3])
 test = True if sys.argv[4] == "True" else False
 
 gen_folder = "test" if test else "valid"
-avg =  "_avg" if get_sys() == "S1" else ""
+avg =  "_avg" if get_sys(exp) == "S1" else ""
 
 datafile = get_datafile_path(exp)
 dict_pfx = get_dict_pfx(exp)
