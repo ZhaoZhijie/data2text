@@ -71,6 +71,7 @@ def calc_precrec(goldfi, predfi):
     gold_triples = get_triples(goldfi)
     pred_triples = get_triples(predfi)
     total_tp, total_predicted, total_gold = 0, 0, 0
+    print("gold_triples len {}, pred_triples len {}".format(len(gold_triples), len(pred_triples)))
     assert len(gold_triples) == len(pred_triples)
     for i, triplist in enumerate(pred_triples):
         tp = sum((1 for j in range(len(triplist))
