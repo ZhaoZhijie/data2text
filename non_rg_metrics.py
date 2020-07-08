@@ -120,7 +120,8 @@ def calc_dld(goldfi, predfi):
     print("avg score:", avg_score)
     return avg_score
 
-calc_precrec(sys.argv[1], sys.argv[2])
-calc_dld(sys.argv[1], sys.argv[2])
+if __name__ == "__main__":
+    calc_precrec(sys.argv[1], sys.argv[2])
+    calc_dld(sys.argv[1], sys.argv[2])
 
 # usage python non_rg_metrics.py gold_tuple_fi pred_tuple_fi
