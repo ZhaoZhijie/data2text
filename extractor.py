@@ -616,7 +616,6 @@ def marginal_nll_loss(input, target, sizeAverage=True):
 def main():
     global opt
     opt = parser.parse_args()
-    return
     torch.manual_seed(opt.seed)
     torch.cuda.manual_seed(opt.seed)
     # torch.cuda.set_device(opt.gpuid)
