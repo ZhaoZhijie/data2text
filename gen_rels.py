@@ -21,7 +21,7 @@ def get_dict_pfx(exp):
 
 def get_eval_models(exp):
     dataset = exp[2:4]
-    return os.path.join("eval_models", dataset, "best")
+    return os.path.join("eval_models", dataset, "best","use")
 
 
 exp = sys.argv[1]
