@@ -543,7 +543,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         for k in range(sent.size(0)):
             candNum = candNum + 1
             if boxRestarts and candNum in boxRestarts.keys():
-                for space_num in boxRestarts[candNum]:
+                for space_num in range(boxRestarts[candNum]):
                     tupfile.write("\n")
                 del boxRestarts[candNum]
                 seen = {}
