@@ -23,11 +23,14 @@ gold_tuples = get_gold_tuples(exp, test)
 
 
 for i in range(step_start, step_end+1):
-    step = i*1000
-    predtuples = "experiments/exp-{}/gens/{}_ex/predictions{}_{}.h5-tuples.txt".format(exp, gen_folder, avg, step)
-    print("current predtuples", predtuples)
-    calc_precrec(gold_tuples, predtuples)
-    calc_dld(gold_tuples, predtuples)
+    try:
+        step = i*1000
+        predtuples = "experiments/exp-{}/gens/{}_ex/predictions{}_{}.h5-tuples.txt".format(exp, gen_folder, avg, step)
+        print("current predtuples", predtuples)
+        calc_precrec(gold_tuples, predtuples)
+        calc_dld(gold_tuples, predtuples)
+    except Exception as e:
+        print(e)
 
 
 
