@@ -543,9 +543,9 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
         for k in range(sent.size(0)):
             candNum = candNum + 1
             if boxRestarts and candNum in boxRestarts.keys():
-                for space_num in boxRestarts[canNum]:
+                for space_num in boxRestarts[candNum]:
                     tupfile.write("\n")
-                del boxRestarts[canNum]
+                del boxRestarts[candNum]
                 seen = {}
             if not ignoreIdx or in_denominator[k] != ignoreIdx:
                 sentstr = idxstostring(sent[k], ivocab)
