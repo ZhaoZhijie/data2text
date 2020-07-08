@@ -42,7 +42,7 @@ for i in range(step_start, step_end+1):
     step = i*1000
     preddata = "experiments/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(exp, gen_folder, avg, step)
     sys.argv = [sys.argv[0], "-datafile", datafile, "-preddata", preddata, "-dict_pfx", dict_pfx, "-ignore_idx", str(ignore_idx), "-eval_models", eval_models, "-just_eval"]
-    print("step {} preddata {}".format(step, preddata))
+    # print("step {} preddata {}".format(step, preddata))
     if test:
         sys.argv.append("-test")
     main()
