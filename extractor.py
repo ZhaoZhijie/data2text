@@ -137,8 +137,11 @@ parser.add('-just_eval', '--just_eval', default=False, action="store_true", help
 parser.add('-lstm', '--lstm', default=False, action="store_true", help='use a BLSTM rather than a convolutional model')
 parser.add('-geom', '--geom', default=False, action="store_true", help='average models geometrically')
 parser.add('-test', '--test', default=False, action="store_true", help='use test data')
+parser.add('-eval_models', '--eval_models', default='', help='path to trained extractor models')
 
-opt = parser.parse_args()
+
+
+opt = None
 if torch.cuda.is_available():
   print("gpu is ok")
   device = torch.device("cuda")
@@ -571,9 +574,24 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     tupfile.close()
     return acc
 
-def set_up_saved_models():
-    convens_paths = ["eval_models/D1/best/conv2ie-ep5-94-64.pt","eval_models/D1/best/conv3ie-ep5-92-67.pt","eval_models/D1/best/conv4ie-ep13-92-67.pt"]
+def get_model_paths(path):
+    convens_paths = []
     lstmens_paths = []
+    files = os.path.dir(path)
+    for f in files:
+        fp = os.path.join(path, f)
+        if "conv" in f:
+            convens_paths.append(fp)
+        elif "lstm" in f:
+            lstmens_paths.append(fp)
+    return convens_paths, lstmens_paths
+
+def set_up_saved_models(path):
+    if len(path) > 0:
+        convens_paths, lstmens_paths = get_model_paths(path)
+    else:
+        convens_paths = ["eval_models/D1/best/conv2ie-ep5-94-64.pt","eval_models/D1/best/conv3ie-ep5-92-67.pt","eval_models/D1/best/conv4ie-ep13-92-67.pt"]
+        lstmens_paths = []
     opt.embed_size = 200
     opt.num_filters = 200
     opt.conv_fc_layer_size = 500
@@ -596,6 +614,9 @@ def marginal_nll_loss(input, target, sizeAverage=True):
 
 
 def main():
+    global opt
+    opt = parser.parse_args()
+    return
     torch.manual_seed(opt.seed)
     torch.cuda.manual_seed(opt.seed)
     # torch.cuda.set_device(opt.gpuid)
@@ -606,7 +627,7 @@ def main():
     V_sizes = (word_pad+1, ent_dist_pad+1, num_dist_pad+1)
 
     if opt.just_eval:
-        convens_paths, lstmens_paths = set_up_saved_models()
+        convens_paths, lstmens_paths = set_up_saved_models(opt.eval_models)
 
         convens, lstmens = None, None
 
@@ -626,7 +647,7 @@ def main():
                 mod.to(device)
                 lstmens.append(mod)
         eval_gens(pred_batches, opt.ignore_idx, pboxrestartidxs, convens, lstmens)
-        sys.exit()
+        return
 
     model = None
     if opt.lstm:
