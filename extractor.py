@@ -479,6 +479,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
     boxRestarts = None
     if isinstance(boxrestartidxs, torch.Tensor):
         boxRestarts = {}
+        print("boxrestartidxs length {}".format(len(boxrestartidxs)))
         assert boxrestartidxs.dim() == 1
         for i in range(boxrestartidxs.size(0)):
             idx = int(boxrestartidxs[i])
