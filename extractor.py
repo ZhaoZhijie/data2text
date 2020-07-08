@@ -578,7 +578,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
 def get_model_paths(path):
     convens_paths = []
     lstmens_paths = []
-    files = os.path.dir(path)
+    files = os.listdir(path)
     for f in files:
         fp = os.path.join(path, f)
         if "conv" in f:
