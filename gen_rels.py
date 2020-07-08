@@ -45,7 +45,7 @@ for i in range(step_start, step_end+1):
     print("step {} preddata {}".format(step, preddata))
     if test:
         sys.argv.append("-test")
-        main()
+    main()
 
 
 
