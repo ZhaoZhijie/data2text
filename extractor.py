@@ -528,7 +528,7 @@ def eval_gens(predbatches, ignoreIdx, boxrestartidxs, convens, lstmens):
                     enpredsj.log_()
                 enpreds1.add_(enpredsj)
             
-            if preds:
+            if isinstance(preds, torch.Tensor):
                 preds.add_(enpreds1)
             else:
                 preds = enpreds1
