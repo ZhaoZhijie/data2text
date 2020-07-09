@@ -302,8 +302,6 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
                 if j_next_key in entry_keys and team_name_j == entry[j_next_key]["NEXT-HOME-TEAM"] and team_name_i == entry[j_next_key]["NEXT-VISITING-TEAM"]:
                     rels.append((teams[j], teams[i][0:3], "NEXT-VISITING-TEAM", is_j_home))
                     found = True
-                if found:
-                    print("last rel", rels[-1])
                 if not found:
                     rels.append((teams[i], teams[j][0:3], "NONE", None))
     return rels
