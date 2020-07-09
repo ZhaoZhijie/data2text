@@ -260,7 +260,7 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
             next_key = "home_next_game" if is_home else "vis_next_game"
             for j, daytup in enumerate(days):
                 found = False
-                if entry["game"]["DAYNAME"] == daytup[2] and is_home:
+                if "game" in entry_keys and entry["game"]["DAYNAME"] == daytup[2] and is_home:
                     rels.append((ent, daytup, "DAYNAME", is_home))
                     found = True
                 if next_key in entry_keys and entry[next_key]["NEXT-DAYNAME"] == daytup[2]:
@@ -270,7 +270,7 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
                     rels.append((ent, daytup, "NONE", None))
             for j, citytup in enumerate(cities):
                 found = False
-                if entry["game"]["CITY"] == citytup[2] and is_home:
+                if "game" in entry_keys and entry["game"]["CITY"] == citytup[2] and is_home:
                     rels.append((ent, citytup, "CITY", is_home))
                     found = True
                 if next_key in entry_keys and entry[next_key]["NEXT-CITY"] == citytup[2]:
@@ -290,10 +290,10 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
                 is_j_home = is_team_home(team_name_j, entry)
                 i_next_key = "home_next_game" if is_i_home else "vis_next_game"
                 j_next_key = "home_next_game" if is_j_home else "vis_next_game"
-                if team_name_i == entry["game"]["HOME-TEAM"] and team_name_j == entry["game"]["VISITING-TEAM"]:
+                if "game" in entry_keys and team_name_i == entry["game"]["HOME-TEAM"] and team_name_j == entry["game"]["VISITING-TEAM"]:
                     rels.append((teams[i], teams[j][0:3], "VISITING-TEAM", is_i_home))
                     found = True
-                if team_name_j == entry["game"]["HOME-TEAM"] and team_name_i == entry["game"]["VISITING-TEAM"]:
+                if "game" in entry_keys and team_name_j == entry["game"]["HOME-TEAM"] and team_name_i == entry["game"]["VISITING-TEAM"]:
                     rels.append((teams[j], teams[i][0:3], "VISITING-TEAM", is_j_home))
                     found = True 
                 if i_next_key in entry_keys and team_name_i == entry[i_next_key]["NEXT-HOME-TEAM"] and team_name_j == entry[i_next_key]["NEXT-VISITING-TEAM"]:
