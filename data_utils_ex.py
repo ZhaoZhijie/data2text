@@ -291,20 +291,21 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
                 i_next_key = "home_next_game" if is_i_home else "vis_next_game"
                 j_next_key = "home_next_game" if is_j_home else "vis_next_game"
                 if team_name_i == entry["game"]["HOME-TEAM"] and team_name_j == entry["game"]["VISITING-TEAM"]:
-                    rels.append((teams[i], teams[j][0:2], "VISITING-TEAM", is_i_home))
+                    rels.append((teams[i], teams[j][0:3], "VISITING-TEAM", is_i_home))
                     found = True
                 if team_name_j == entry["game"]["HOME-TEAM"] and team_name_i == entry["game"]["VISITING-TEAM"]:
-                    rels.append((teams[j], teams[i][0:2], "VISITING-TEAM", is_j_home))
+                    rels.append((teams[j], teams[i][0:3], "VISITING-TEAM", is_j_home))
                     found = True 
                 if i_next_key in entry_keys and team_name_i == entry[i_next_key]["NEXT-HOME-TEAM"] and team_name_j == entry[i_next_key]["NEXT-VISITING-TEAM"]:
-                    rels.append((teams[i], teams[j][0:2], "NEXT-VISITING-TEAM", is_i_home))
+                    rels.append((teams[i], teams[j][0:3], "NEXT-VISITING-TEAM", is_i_home))
                     found = True
                 if j_next_key in entry_keys and team_name_j == entry[j_next_key]["NEXT-HOME-TEAM"] and team_name_i == entry[j_next_key]["NEXT-VISITING-TEAM"]:
-                    rels.append((teams[j], teams[i][0:2], "NEXT-VISITING-TEAM", is_j_home))
+                    rels.append((teams[j], teams[i][0:3], "NEXT-VISITING-TEAM", is_j_home))
                     found = True
-
+                if found:
+                    print("last rel", rels[-1])
                 if not found:
-                    rels.append((teams[i], teams[j][0:2], "NONE", None))
+                    rels.append((teams[i], teams[j][0:3], "NONE", None))
     return rels
 
 def append_candidate_rels(entry, summ, all_ents, prons, players_set, teams_set, cities_set, candrels):
