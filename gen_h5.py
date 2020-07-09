@@ -26,7 +26,7 @@ for f in gen_files:
     gen_fi = os.path.join(opt.gen_path, f)
     h5_name = f.replace(".txt", ".h5")
     output_fi = os.path.join(opt.h5_path, h5_name)
-    cmd = 'python data_utils.py -mode prep_gen_data -gen_fi "{}" -dict_pfx "{}" -output_fi "{}" -input_path "{}" {}'\
+    cmd = 'python data_utils_ex.py -mode prep_gen_data -gen_fi "{}" -dict_pfx "{}" -output_fi "{}" -input_path "{}" {}'\
         .format(gen_fi, dict_pfx, output_fi, input_path, test)
     os.system(cmd)
     
