@@ -508,6 +508,7 @@ def prep_generated_data(genfile, dict_pfx, outfile, path="../boxscore-data/rotow
         append_multilabeled_data(tup, psents, plens, pentdists, pnumdists, plabels, vocab, labeldict, max_len)
     #有可能最后几个没有提取出关系，它们的终止长度是一样的，这种特殊情况之前的代码也没考虑到
     lastkeys = sent_reset_indices.keys()
+    print("nugz length", len(nugz), "last key", lastkeys)
     assert len(lastkeys) == 1
     for i in range(sent_reset_indices.popitem()[1] - 1):
         rel_reset_indices.append(len(psents))
