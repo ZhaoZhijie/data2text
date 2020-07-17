@@ -29,7 +29,7 @@ def scp_models(seed, exp):
     path = "experiments/exp-seed-{}/exp-{}/models".format(seed, exp)
     files = os.listdir(path)
     paths = [os.path.join(path, f) for f in files]
-    tar_path = "home/zzjstars/zzj{}n{}_drive/".format(exp.lower(), seed)
+    tar_path = "/home/zzjstars/zzj{}n{}_drive/".format(exp.lower(), seed)
     scp_files(paths, tar_path)
 
 
