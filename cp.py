@@ -32,7 +32,9 @@ def scp_models(seed, exp):
     scp_files(paths, tar_path)
 
 
-scp_models(528, "S1D1")
+seed = sys.argv[1]
+exp = sys.argv[2]
+scp_models(seed, exp)
 
 # scp_files(["/mnt/c/Users/Administrator/Desktop/summary.pdf"], "/home/zzjstars")
 
