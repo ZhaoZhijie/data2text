@@ -58,7 +58,7 @@ def prepare_avg_model(seed, exp, n, last=False):
     if len(succs) != len(src_models):
         return False
     avg_cp = average_checkpoints(merged)
-    output = "model_avg_{}.pt".format(n*1000)
+    output = "model_avg_step_{}.pt".format(n*1000)
     torch.save(avg_cp, os.path.join(tar_folder, output))
     if last:
         for model in merged:
