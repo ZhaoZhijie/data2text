@@ -9,7 +9,7 @@ PORT = 22
 USER = "root"
 PASS = "17951"
 
-def scp_files(src_path, tar_path):
+def scp_files(src_path, tar_path, get=False):
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     ssh_client.connect(HOST, PORT, USER, PASS)
@@ -20,13 +20,17 @@ def scp_files(src_path, tar_path):
         src_path = [src_path]
     for file in src_path:
         try:
-            scpclient.put(file, tar_path)
+            if get:
+                scpclient.get(file, tar_path)
+            else:
+                scpclient.put(file, tar_path)
+            
         except Exception as e:
             logger.info(e)
-            logger.info("File {} upload error".format(file))
+            logger.info("File {} copy error".format(file))
             fails.append(file)
         else:
-            logger.info("file {} upload successfully".format(file))
+            logger.info("file {} copy successfully".format(file))
             succs.append(file)
     ssh_client.close()
     return succs, fails
