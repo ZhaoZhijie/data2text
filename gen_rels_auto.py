@@ -69,7 +69,7 @@ def gen_rels(seeds, test=False):
                 gtag = generate_h5(seed, exp, i, test, avg)
                 if gtag:
                     main()
-                    remove_h5(seed, exp, i, test)
+                    remove_h5(seed, exp, i, test, avg)
                 else:
                     logger.info("gen h5 file error, seed:{} exp:{} i:{} test:{}".format(seed, exp, i, test))
 
