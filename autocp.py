@@ -1,6 +1,9 @@
 from cp import scp_files
 import os
 import time
+from logger import logger
+
+
 
 
 def cp_models_generated(seeds=[]):
@@ -15,13 +18,13 @@ def cp_models_generated(seeds=[]):
                 succs, fails = scp_files(filepaths, savepath)
                 for succ in succs:
                     os.remove(succ)
-                    print("移除模型文件{}".format(succ))
+                    logger.info("移除模型文件{}".format(succ))
                 if fails:
-                    print("传输失败的文件{}".format(fails))
+                    logger.info("传输失败的文件{}".format(fails))
 
 def monitor(seeds):
     for i in range(200000):
-        print("检测是否有模型生成")
+        logger.info("check models folders")
         cp_models_generated(seeds)
         time.sleep(30)
 
