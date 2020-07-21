@@ -264,7 +264,7 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
                     if "game" in entry_keys and entry["game"]["DAYNAME"] == daytup[2] and is_home:
                         rels.append((ent, daytup, "DAYNAME", is_home))
                         found = True
-                    if next_key in entry_keys and entry[next_key]["NEXT-DAYNAME"] == daytup[2] and :
+                    if next_key in entry_keys and entry[next_key]["NEXT-DAYNAME"] == daytup[2]:
                         rels.append((ent, daytup, "NEXT-DAYNAME", is_home))
                         found = True
                     if not found:
