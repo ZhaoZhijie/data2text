@@ -1,6 +1,7 @@
 from extractor import main, get_dict
 import sys
 import os
+from logger import logger
 
 def get_ignore_idx(exp):
     dataset = "D2"
@@ -30,11 +31,10 @@ def generate_h5(seed, exp, n, test=False, avg=False):
     dict_pfx = "data/D2/D2"
     output_fi = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, n*1000)
     input_path = "data/D2"
+    test_tag = "-test" if test else ""
     cmd = 'python data_utils_ex.py -mode prep_gen_data -gen_fi "{}" -dict_pfx "{}" -output_fi "{}" -input_path "{}" {}'\
-            .format(gen_fi, dict_pfx, output_fi, input_path, test)
+            .format(gen_fi, dict_pfx, output_fi, input_path, test_tag)
     os.system(cmd)
-    print("gen_fi", gen_fi)
-    print("output_fi", output_fi)
     return os.path.exists(output_fi)
 
 def remove_h5(seed, exp, n, test=False, avg=False):
@@ -62,13 +62,16 @@ def gen_rels(seeds, test=False):
             ignore_idx = get_ignore_idx(exp)
             eval_models = get_eval_models(exp)
             for i in range(step_start, step_end+1):
-                preddata = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, avg, i*1000)
+                preddata = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, i*1000)
                 sys.argv = [sys.argv[0], "-datafile", datafile, "-preddata", preddata, "-dict_pfx", dict_pfx, "-ignore_idx", str(ignore_idx), "-eval_models", eval_models, "-just_eval"]
                 if test:
                     sys.argv.append("-test")
-                generate_h5(seed, exp, i, test, avg)
-                main()
-                remove_h5(seed, exp, i, test)
+                gtag = generate_h5(seed, exp, i, test, avg)
+                if gatg:
+                    main()
+                    remove_h5(seed, exp, i, test)
+                else:
+                    logger.info("gen h5 file error, seed:{} exp:{} i:{} test:{}".format(seed, exp, i, test))
 
 
 if __name__ == "__main__":
