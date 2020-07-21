@@ -1,4 +1,4 @@
-from cp import scp_files
+from cp import put_files
 import os
 import time
 from logger import logger
@@ -15,7 +15,7 @@ def cp_models_generated(seeds=[]):
             files = os.listdir(folder)
             if files:
                 filepaths = [os.path.join(folder, file) for file in files]
-                succs, fails = scp_files(filepaths, savepath)
+                succs, fails = put_files(filepaths, savepath)
                 for succ in succs:
                     os.remove(succ)
                     logger.info("移除模型文件{}".format(succ))
@@ -28,7 +28,10 @@ def monitor(seeds):
         cp_models_generated(seeds)
         time.sleep(30)
 
-seeds = [287, 684, 963]
+def get_seeds(seedstr):
+    return [int(seed) for seed in seedstr.split(",")]
+
+seeds = get_seeds(sys.argv[1])
 monitor(seeds)
 
 
