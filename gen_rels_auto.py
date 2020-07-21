@@ -67,7 +67,7 @@ def gen_rels(seeds, test=False):
                 if test:
                     sys.argv.append("-test")
                 gtag = generate_h5(seed, exp, i, test, avg)
-                if gatg:
+                if gtag:
                     main()
                     remove_h5(seed, exp, i, test)
                 else:
