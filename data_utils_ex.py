@@ -257,7 +257,7 @@ def get_rels(entry, ents, nums, days, cities, players_set, teams_set, cities_set
                             found = True
                 if not found:
                     rels.append((ent, numtup, "NONE", None)) # should i specialize the NONE labels too?
-            if is_home != None
+            if is_home != None:
                 next_key = "home_next_game" if is_home else "vis_next_game"
                 for j, daytup in enumerate(days):
                     found = False
