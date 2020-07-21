@@ -3,8 +3,8 @@ from onmt.bin.translate import translate, _get_parser
 import sys
 from cp import scp_files
 import os
-from average_checkpoints import main as avg_models
 from logger import logger
+import torch
 
 def get_avg_args(seed, exp, n):
     args = []
@@ -57,26 +57,47 @@ def prepare_avg_model(seed, exp, n, last=False):
     succs, fails = scp_files(src_models, tar_folder, get=True)
     if len(succs) != len(src_models):
         return False
-    sys.argv = ["average_checkpoints.py"] + get_avg_args(seed, exp, n)
-    avg_models()
+    avg_cp = average_checkpoints(merged)
+    output = "model_avg_{}.pt".format(n*1000)
+    torch.save(avg_cp, os.path.join(tar_folder, output))
     if last:
         for model in merged:
             os.remove(model)
     else:
         if len(merged) >= 5:
             os.remove(merged[0])
+    return True
 
 def clear_translate_model(seed, exp, n, avg=False):
-    if avg:
-        path = "experiments/exp-seed-{}/exp-{}/models/avg_model_{}.pt".format(seed, exp, n*1000)
-    else:
-        path = "experiments/exp-seed-{}/exp-{}/models/model_step_{}.pt".format(seed, exp, n*1000)
+    midstr = "_avg" if avg else ""
+    path = "experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, n*1000)
     if os.path.exists(path):
         os.remove(path)
 
-
-
-
+def average_checkpoints(checkpoint_files):
+    vocab = None
+    opt = None
+    avg_model = None
+    avg_generator = None
+    
+    for i, checkpoint_file in enumerate(checkpoint_files):
+        m = torch.load(checkpoint_file, map_location='cpu')
+        model_weights = m['model']
+        generator_weights = m['generator']
+        
+        if i == 0:
+            vocab, opt = m['vocab'], m['opt']
+            avg_model = model_weights
+            avg_generator = generator_weights
+        else:
+            for (k, v) in avg_model.items():
+                avg_model[k].mul_(i).add_(model_weights[k]).div_(i + 1)
+                
+            for (k, v) in avg_generator.items():
+                avg_generator[k].mul_(i).add_(generator_weights[k]).div_(i + 1)
+    
+    return {"vocab": vocab, 'opt': opt, 'optim': None,
+            "generator": avg_generator, "model": avg_model}
 
 
 if __name__ == "__main__":
