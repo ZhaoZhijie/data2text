@@ -16,7 +16,7 @@ def get_avg_args(seed, exp, n):
     start = n - 4
     if start < 1:
         start = 1
-    end = steps + 1
+    end = n + 1
     for i in range(start, end):
         args.append(str(i*1000))
     return args
