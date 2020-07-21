@@ -1,4 +1,4 @@
-from cp import put_files
+from cp import scp_files
 import os
 import time
 from logger import logger
@@ -15,7 +15,7 @@ def cp_models_generated(seeds=[]):
             files = os.listdir(folder)
             if files:
                 filepaths = [os.path.join(folder, file) for file in files]
-                succs, fails = put_files(filepaths, savepath)
+                succs, fails = scp_files(filepaths, savepath)
                 for succ in succs:
                     os.remove(succ)
                     logger.info("移除模型文件{}".format(succ))
