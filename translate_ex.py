@@ -86,7 +86,7 @@ if __name__ == "__main__":
     end = int(sys.argv[4])
     avg = sys.argv[5] == "True"
     test = sys.argv[6] == "True"
-    sys.argv = [sys.argv[0], "--config", "translate{}.cfg".format(exp)]
+    sys.argv = [sys.argv[0], "--config", "translate_{}.cfg".format(exp)]
     logger.info("seed-{} exp-{} start-{} end-{}".format(seed, exp, start, end))
     midstr = "_avg" if avg else ""
     gens = "test" if test else "valid"
