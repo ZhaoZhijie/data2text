@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 print("current", pred_file)
                 cmd = "cat {} | sacrebleu --force {}".format(pred_file, get_golden_output(exp, test))
                 res = os.popen(cmd).read()
-                wf.write(pred_files+"\n"+res+"\n")
+                wf.write(pred_file+"\n"+res+"\n")
             wf.close()
 
 
