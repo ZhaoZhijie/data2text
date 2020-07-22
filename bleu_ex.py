@@ -23,7 +23,7 @@ def get_predictions(seed, exp, test):
     gens = "test" if test else "valid"
     pred_folder = "experiments/exp-seed-{}/exp-{}/gens/{}".format(seed, exp, gens)
     files = os.listdir(pred_folder)
-    step_files = [(get_model_steps(file), file) for file in files]
+    step_files = [(get_model_steps(file), os.path.join(pred_folder, file)) for file in files]
     def get_first(elem):
         return elem[0]
     step_files.sort(key=get_first)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             for pred_file in pred_files:
                 print("current", pred_file)
                 cmd = "cat {} | sacrebleu --force {}".format(pred_file, get_golden_output(exp, test))
-                res = os.popen(cmd)
+                res = os.popen(cmd).read()
                 wf.write(pred_files+"\n"+res+"\n")
             wf.close()
 
