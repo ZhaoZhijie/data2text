@@ -117,7 +117,7 @@ def get_best_bleu(seed, exp):
         if "predictions" in text:
             step = int(re.findall(r"_([0-9]+).txt", text)[0])
         elif "BLEU" in text:
-            bleu = float(re.findall(r"version.1.4.10 = ([0-9]+.[0-9]+)", text)[0])
+            bleu = float(re.findall(r"version.1.4.12 = ([0-9]+.[0-9]+)", text)[0])
             step_bleu.append((bleu, step))
     def get_first(elem):
         return elem[0]
