@@ -2,6 +2,7 @@ from extractor import main, get_dict
 import sys
 import os
 from logger import logger
+import re
 
 def get_ignore_idx(exp):
     dataset = "D2"
