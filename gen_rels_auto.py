@@ -63,6 +63,9 @@ def get_predictions(seed, exp, test):
     step_files.sort(key=get_first)
     return [tup[1] for tup in step_files]
 
+def get_seeds(seedstr):
+    return [int(seed) for seed in seedstr.split(",")]
+
 def gen_rels(seeds, test=False):
     exps = ["S1D1", "S1D2", "S4D1", "S4D2"]
     gen_folder = "test" if test else "valid"
