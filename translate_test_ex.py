@@ -5,6 +5,10 @@ from cp import scp_files
 import os
 from logger import logger
 import torch
+import re
+
+exps = ["S1D1","S1D2","S4D1","S4D2"]
+
 
 def get_avg_args(seed, exp, n):
     args = []
@@ -103,30 +107,119 @@ def get_steps_no(nostr):
     nos = nostr.split(",")
     return [int(no) for no in nos]
 
+def get_best_bleu(seed, exp):
+    fpath = "logs/exp-seed-{}/bleu_score_{}.txt".format(seed, exp)
+    f = open(fpath, "r")
+    texts = f.readlines()
+    step = 0
+    step_bleu = []
+    for text in texts:
+        if "predictions" in text:
+            step = int(re.findall(r"_([0-9]+).txt", text)[0])
+        elif "BLEU" in text:
+            bleu = float(re.findall(r"version.1.4.10 = ([0-9]+.[0-9]+)", text)[0])
+            step_bleu.append((bleu, step))
+    def get_first(elem):
+        return elem[0]
+    step_bleu.sort(key=get_first, reverse=True)
+    f.close()
+    return step_bleu[0][1]
+
+def get_best_RG(seed, exp):
+    fpath = "logs/exp-seed-{}/gen-rels.out".format(seed)
+    f = open(fpath, "r")
+    texts = f.readlines()
+    isexp = False
+    step = 0
+    step_rg = []
+    for text in texts:
+        if "predictions" in text:
+            if exp in text:
+                step = int(re.findall(r"_([0-9]+).h5", text)[0])
+                isexp = True
+            else:
+                isexp = False
+        elif isexp and "nodup prec" in text:
+            prec = float(re.findall(r"nodup prec ([0-9]+.[0-9]+)", text)[0])
+            step_rg.append((prec, step))
+    def get_first(elem):
+        return elem[0]
+    step_rg.sort(key=get_first, reverse=True)
+    f.close()
+    return step_rg[0][1]
+
+def get_best_other(seed, exp):
+    fpath = "logs/exp-seed-{}/gen-metrics.out".format(seed)
+    f = open(fpath, "r")
+    texts = f.readlines()
+    isexp = False
+    step = 0
+    prec = 0
+    rec = 0
+    co = 0
+    step_other = []
+    for text in texts:
+        if "predictions" in text:
+            if exp in text:
+                step = int(re.findall(r"_([0-9]+).h5", text)[0])
+                isexp = True
+            else:
+                isexp = False
+        elif isexp and "prec" in text and "rec" in text:
+            prec = float(re.findall(r"prec: ([0-9]+.[0-9]+)", text)[0])
+            rec = float(re.findall(r"rec: ([0-9]+.[0-9]+)", text)[0])
+        elif isexp and "avg score" in text:
+            co = float(re.findall(r"avg score: ([0-9]+.[0-9]+)", text)[0])
+            step_other.append((prec, rec, co, step))
+    def get_first(elem):
+        return elem[0]
+    def get_second(elem):
+        return elem[1]
+    def get_third(elem):
+        return elem[2]
+    step_other.sort(key=get_first, reverse=True)
+    best_prec_step = step_other[0][3]
+    step_other.sort(key=get_second, reverse=True)
+    best_rec_step = step_other[0][3]
+    step_other.sort(key=get_third, reverse=True)
+    best_co_step = step_other[0][3]
+    f.close()
+    return best_prec_step, best_rec_step, best_co_step
+
+
+def get_best_models(seed):
+    #get the steps of best bleu score, RG，CS，CO
+    best_models = {}
+    for exp in exps:
+        bleu_step = get_best_bleu(seed, exp)
+        rg_step = get_best_RG(seed, exp)
+        cs_prec_step, cs_rec_step, co_step = get_best_other(seed, exp)
+        print("seed:{} exp:{} bleu_step:{} rg_step:{} cs_prec_step:{} cs_rec_step:{} co_step:{}".format(seed, exp, bleu_step, rg_step, cs_prec_step, cs_rec_step, co_step))
+        best_models[exp] = set([bleu_step, rg_step, cs_prec_step, cs_rec_step, co_step])
+    return best_models
 
 if __name__ == "__main__":
     seed = int(sys.argv[1])
-    exp = sys.argv[2]
-    step_nos = get_steps_no(sys.argv[3])
-    avg = sys.argv[4] == "True"
-    test = sys.argv[5] == "True"
+    test = sys.argv[2] == "True"
     sys.argv = [sys.argv[0], "--config", "config-seed-{}/translate_{}.cfg".format(seed, exp)]
-    logger.info("seed-{} exp-{} start-{} end-{}".format(seed, exp, start, end))
-    midstr = "_avg" if avg else ""
     gens = "test" if test else "valid"
-    for i in step_nos:
-        steps = i*1000
-        parser = _get_parser()
-        opt = parser.parse_args()
-        opt.output = "experiments/exp-seed-{}/exp-{}/gens/{}/predictions{}_{}.txt".format(seed, exp, gens, midstr, steps)
-        opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, steps)]
-        opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-log.txt".format(seed, exp, midstr, steps)
-        tag = prepare_model(seed, exp, i, avg, True)
-        if tag:
-            translate(opt)
-            clear_translate_model(seed, exp, i, avg)
-        else:
-            logger.info("translate error n={}".format(i))
+    midstr = "_avg" if avg else ""
+    best_models = get_best_models(seed)
+    for exp in exps:
+        models_steps = best_models[exp]
+        for step in models_steps:
+            parser = _get_parser()
+            opt = parser.parse_args()
+            opt.output = "experiments/exp-seed-{}/exp-{}/gens/{}/predictions{}_{}.txt".format(seed, exp, gens, midstr, steps)
+            opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, steps)]
+            opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-log.txt".format(seed, exp, midstr, steps)
+            tag = prepare_model(seed, exp, steps/1000, avg, True)
+            if tag:
+                translate(opt)
+                clear_translate_model(seed, exp, steps/1000, avg)
+            else:
+                logger.info("translate error steps={}".format(steps)) 
+
 
 
 
