@@ -34,26 +34,24 @@ def get_tuple_files(seed, exp, test):
 
 
 seed = sys.argv[1]
-exp = sys.argv[2]
-step_start = int(sys.argv[3])
-step_end = int(sys.argv[4])
 test = sys.argv[5] == "True"
-
 gen_folder = "test" if test else "valid"
-avg =  "_avg" if get_sys(exp) == "S1" else ""
-gold_tuples = get_gold_tuples(exp, test)
 
+exps = ["S1D1", "S1D2", "S4D1", "S4D2"]
 
-tup_files = get_tuple_files(seed, exp, test)
-for f in tup_files:
-    try:
-        step = get_model_steps(f)
-        predtuples = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5-tuples.txt".format(seed, exp, gen_folder, avg, step)
-        print("current predtuples", predtuples)
-        calc_precrec(gold_tuples, predtuples)
-        calc_dld(gold_tuples, predtuples)
-    except Exception as e:
-        print(e)
+for exp in exps:
+    avg =  "_avg" if get_sys(exp) == "S1" else ""
+    gold_tuples = get_gold_tuples(exp, test)
+    tup_files = get_tuple_files(seed, exp, test)
+    for f in tup_files:
+        try:
+            step = get_model_steps(f)
+            predtuples = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5-tuples.txt".format(seed, exp, gen_folder, avg, step)
+            print("current predtuples", predtuples)
+            calc_precrec(gold_tuples, predtuples)
+            calc_dld(gold_tuples, predtuples)
+        except Exception as e:
+            print(e)
 
 
 
