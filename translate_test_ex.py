@@ -210,7 +210,6 @@ if __name__ == "__main__":
             parser = _get_parser()
             opt = parser.parse_args()
             opt.src = "data/{}_validation_data.txt".format(exp if "S4" in exp else exp[2:4])
-            print(opt.src)
             opt.output = "experiments/exp-seed-{}/exp-{}/gens/test/predictions{}_{}.txt".format(seed, exp, midstr, step)
             opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, step)]
             opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-test-log.txt".format(seed, exp, midstr, step)
