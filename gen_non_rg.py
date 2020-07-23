@@ -11,7 +11,8 @@ def get_dataset(exp):
 
 def get_gold_tuples(exp, test):
     dataset = get_dataset(exp)
-    return "data/{}/{}_validation_txt.h5-tuples.txt".format(dataset, dataset)
+    name = "test" if test else "validation"
+    return "data/{}/{}_{}_txt.h5-tuples.txt".format(dataset, dataset, name)
 
 
 def get_model_steps(file):
