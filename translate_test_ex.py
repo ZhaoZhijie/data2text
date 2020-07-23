@@ -200,25 +200,26 @@ def get_best_models(seed):
 
 if __name__ == "__main__":
     seed = int(sys.argv[1])
-    test = sys.argv[2] == "True"
-    sys.argv = [sys.argv[0], "--config", "config-seed-{}/translate_{}.cfg".format(seed, exp)]
-    gens = "test" if test else "valid"
-    midstr = "_avg" if avg else ""
     best_models = get_best_models(seed)
     for exp in exps:
+        sys.argv = [sys.argv[0], "--config", "config-seed-{}/translate_{}.cfg".format(seed, exp)]
+        avg = exp[0:2] == "S1"
+        midstr = "_avg" if avg else ""
         models_steps = best_models[exp]
         for step in models_steps:
             parser = _get_parser()
             opt = parser.parse_args()
-            opt.output = "experiments/exp-seed-{}/exp-{}/gens/{}/predictions{}_{}.txt".format(seed, exp, gens, midstr, steps)
-            opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, steps)]
-            opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-log.txt".format(seed, exp, midstr, steps)
-            tag = prepare_model(seed, exp, steps/1000, avg, True)
+            opt.src = "data/{}_validation_data.txt".format(exp if "S4" in exp else exp[2:4])
+            print(opt.src)
+            opt.output = "experiments/exp-seed-{}/exp-{}/gens/test/predictions{}_{}.txt".format(seed, exp, midstr, step)
+            opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, step)]
+            opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-test-log.txt".format(seed, exp, midstr, step)
+            tag = prepare_model(seed, exp, step//1000, avg, True)
             if tag:
                 translate(opt)
-                clear_translate_model(seed, exp, steps/1000, avg)
+                clear_translate_model(seed, exp, step//1000, avg)
             else:
-                logger.info("translate error steps={}".format(steps)) 
+                logger.info("translate error step={}".format(step)) 
 
 
 
