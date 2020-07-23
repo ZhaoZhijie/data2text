@@ -50,7 +50,7 @@ if __name__ == "__main__":
             pred_files = get_predictions(seed, exp, test)
             for pred_file in pred_files:
                 print("current", pred_file)
-                cmd = "cat {} | sacrebleu --force {}".format(pred_file, get_golden_output(exp, test))
+                cmd = "cat {} | sacrebleu --width=3 --force {}".format(pred_file, get_golden_output(exp, test))
                 res = os.popen(cmd).read()
                 wf.write(pred_file+"\n"+res+"\n")
             wf.close()
