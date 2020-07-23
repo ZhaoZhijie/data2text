@@ -194,7 +194,7 @@ def get_best_models(seed):
         bleu_step = get_best_bleu(seed, exp)
         rg_step = get_best_RG(seed, exp)
         cs_prec_step, cs_rec_step, co_step = get_best_other(seed, exp)
-        print("seed:{} exp:{} bleu_step:{} rg_step:{} cs_prec_step:{} cs_rec_step:{} co_step:{}".format(seed, exp, bleu_step, rg_step, cs_prec_step, cs_rec_step, co_step))
+        logger.info("seed:{} exp:{} bleu_step:{} rg_step:{} cs_prec_step:{} cs_rec_step:{} co_step:{}".format(seed, exp, bleu_step, rg_step, cs_prec_step, cs_rec_step, co_step))
         best_models[exp] = set([bleu_step, rg_step, cs_prec_step, cs_rec_step, co_step])
     return best_models
 
