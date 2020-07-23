@@ -24,12 +24,12 @@ def get_eval_models(exp):
     dataset = "D2"
     return os.path.join("eval_models", dataset, "best","use")
 
-def generate_h5(seed, exp, n, test=False, avg=False):
+def generate_h5(seed, exp, step, test=False, avg=False):
     gen_folder = "test" if test else "valid"
     midstr = "_avg" if avg else ""
-    gen_fi = "experiments/exp-seed-{}/exp-{}/gens/{}/predictions{}_{}.txt".format(seed, exp, gen_folder, midstr, n*1000)
+    gen_fi = "experiments/exp-seed-{}/exp-{}/gens/{}/predictions{}_{}.txt".format(seed, exp, gen_folder, midstr, step)
     dict_pfx = "data/D2/D2"
-    output_fi = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, n*1000)
+    output_fi = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, step)
     input_path = "data/D2"
     test_tag = "-test" if test else ""
     cmd = 'python data_utils_ex.py -mode prep_gen_data -gen_fi "{}" -dict_pfx "{}" -output_fi "{}" -input_path "{}" {}'\
@@ -37,15 +37,31 @@ def generate_h5(seed, exp, n, test=False, avg=False):
     os.system(cmd)
     return os.path.exists(output_fi)
 
-def remove_h5(seed, exp, n, test=False, avg=False):
+def remove_h5(seed, exp, step, test=False, avg=False):
     gen_folder = "test" if test else "valid"
     midstr = "_avg" if avg else ""
-    output_fi = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, n*1000)
+    output_fi = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, step)
     if os.path.exists(output_fi):
         os.remove(output_fi)
 
-def get_seeds(seedstr):
-    return [int(seed) for seed in seedstr.split(",")]
+def get_model_steps(file):
+    steps = re.findall(r'_([0-9]+).h5', file)
+    if not steps:
+        return None
+    return int(steps[0])
+
+def get_h5files(seed, exp, test):
+    gens = "test_ex" if test else "valid_ex"
+    pred_folder = "experiments/exp-seed-{}/exp-{}/gens/{}".format(seed, exp, gens)
+    files = os.listdir(pred_folder)
+    step_h5files = []
+    for f in files:
+        if ".h5" in f:
+            step_h5files.append((get_model_steps(f), os.path.join(pred_folder, f)))
+    def get_first(elem):
+        return elem[0]
+    step_files.sort(key=get_first)
+    return [tup[1] for tup in step_files]
 
 def gen_rels(seeds, test=False):
     exps = ["S1D1", "S1D2", "S4D1", "S4D2"]
@@ -55,23 +71,23 @@ def gen_rels(seeds, test=False):
             sysname = get_sys(exp)
             avg =  sysname == "S1"
             midstr = "_avg" if avg else ""
-            step_start = 1
-            step_end = 35 if sysname == "S1" else 20
             datafile = get_datafile_path(exp)
             dict_pfx = get_dict_pfx(exp)
             ignore_idx = get_ignore_idx(exp)
             eval_models = get_eval_models(exp)
-            for i in range(step_start, step_end+1):
-                preddata = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, i*1000)
+            h5files = get_h5files(seed, exp, test)
+            for h5file in h5files:
+                step = get_model_steps(h5file)
+                preddata = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, step)
                 sys.argv = [sys.argv[0], "-datafile", datafile, "-preddata", preddata, "-dict_pfx", dict_pfx, "-ignore_idx", str(ignore_idx), "-eval_models", eval_models, "-just_eval"]
                 if test:
                     sys.argv.append("-test")
-                gtag = generate_h5(seed, exp, i, test, avg)
+                gtag = generate_h5(seed, exp, step, test, avg)
                 if gtag:
                     main()
-                    remove_h5(seed, exp, i, test, avg)
+                    remove_h5(seed, exp, step, test, avg)
                 else:
-                    logger.info("gen h5 file error, seed:{} exp:{} i:{} test:{}".format(seed, exp, i, test))
+                    logger.info("gen h5 file error, seed:{} exp:{} step:{} test:{}".format(seed, exp, step, test))
 
 
 if __name__ == "__main__":
