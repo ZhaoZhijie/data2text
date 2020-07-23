@@ -34,7 +34,7 @@ def get_tuple_files(seed, exp, test):
 
 
 seed = sys.argv[1]
-test = sys.argv[5] == "True"
+test = sys.argv[2] == "True"
 gen_folder = "test" if test else "valid"
 
 exps = ["S1D1", "S1D2", "S4D1", "S4D2"]
