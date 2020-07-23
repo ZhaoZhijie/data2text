@@ -45,9 +45,10 @@ def scp_models(seed, exp):
 
 
 if __name__ == "__main__":
-    seed = sys.argv[1]
-    exp = sys.argv[2]
-    scp_models(seed, exp)
+    src = sys.argv[1]
+    tar = sys.argv[2]
+    get = sys.argv[3] == "True"
+    scp_files(src, tar, get)
 
 # scp_files(["/mnt/c/Users/Administrator/Desktop/summary.pdf"], "/home/zzjstars")
 
