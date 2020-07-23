@@ -45,13 +45,13 @@ def remove_h5(seed, exp, step, test=False, avg=False):
         os.remove(output_fi)
 
 def get_model_steps(file):
-    steps = re.findall(r'_([0-9]+).h5', file)
+    steps = re.findall(r'_([0-9]+).txt', file)
     if not steps:
         return None
     return int(steps[0])
 
-def get_h5files(seed, exp, test):
-    gens = "test_ex" if test else "valid_ex"
+def get_predictions(seed, exp, test):
+    gens = "test" if test else "valid"
     pred_folder = "experiments/exp-seed-{}/exp-{}/gens/{}".format(seed, exp, gens)
     files = os.listdir(pred_folder)
     step_h5files = []
@@ -75,9 +75,9 @@ def gen_rels(seeds, test=False):
             dict_pfx = get_dict_pfx(exp)
             ignore_idx = get_ignore_idx(exp)
             eval_models = get_eval_models(exp)
-            h5files = get_h5files(seed, exp, test)
-            for h5file in h5files:
-                step = get_model_steps(h5file)
+            pred_files = get_predictions(seed, exp, test)
+            for pred_file in pred_files:
+                step = get_model_steps(pred_file)
                 preddata = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, step)
                 sys.argv = [sys.argv[0], "-datafile", datafile, "-preddata", preddata, "-dict_pfx", dict_pfx, "-ignore_idx", str(ignore_idx), "-eval_models", eval_models, "-just_eval"]
                 if test:
