@@ -54,10 +54,9 @@ def get_predictions(seed, exp, test):
     gens = "test" if test else "valid"
     pred_folder = "experiments/exp-seed-{}/exp-{}/gens/{}".format(seed, exp, gens)
     files = os.listdir(pred_folder)
-    step_h5files = []
+    step_files = []
     for f in files:
-        if ".h5" in f:
-            step_h5files.append((get_model_steps(f), os.path.join(pred_folder, f)))
+        step_files.append((get_model_steps(f), os.path.join(pred_folder, f)))
     def get_first(elem):
         return elem[0]
     step_files.sort(key=get_first)
