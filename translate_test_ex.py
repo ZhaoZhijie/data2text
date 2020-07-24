@@ -167,7 +167,7 @@ def get_best_other(seed, exp):
                 isexp = False
         elif isexp and "prec" in text and "rec" in text:
             prec = float(re.findall(r"prec: ([0-9]+.[0-9]+)", text)[0])
-            rec = float(re.findall(r"rec: ([0-9]+.[0-9]+)", text)[0])
+            rec = float(re.findall(r" rec: ([0-9]+.[0-9]+)", text)[0])
         elif isexp and "avg score" in text:
             co = float(re.findall(r"avg score: ([0-9]+.[0-9]+)", text)[0])
             step_other.append((prec, rec, co, step))
