@@ -198,8 +198,15 @@ def get_best_models(seed):
         best_models[exp] = set([bleu_step, rg_step, cs_prec_step, cs_rec_step, co_step])
     return best_models
 
+def get_exps(expstr):
+    return [exp for exp in expstr.split(",")]
+
 if __name__ == "__main__":
     seed = int(sys.argv[1])
+    if len(sys.argv) >= 3:
+        exps = get_exps(sys.argv[2])
+    else:
+        exps = ["S1D1", "S1D2", "S4D1", "S4D2"]
     best_models = get_best_models(seed)
     for exp in exps:
         sys.argv = [sys.argv[0], "--config", "config-seed-{}/translate_{}.cfg".format(seed, exp)]
