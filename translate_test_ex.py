@@ -207,10 +207,13 @@ if __name__ == "__main__":
         midstr = "_avg" if avg else ""
         models_steps = best_models[exp]
         for step in models_steps:
+            opt.output = "experiments/exp-seed-{}/exp-{}/gens/test/predictions{}_{}.txt".format(seed, exp, midstr, step)
+            if os.path.exists(opt.output):
+                logger.info("prediction already done for {}".format(opt.output))
+                continue
             parser = _get_parser()
             opt = parser.parse_args()
             opt.src = "data/{}_test_data.txt".format(exp if "S4" in exp else exp[2:4])
-            opt.output = "experiments/exp-seed-{}/exp-{}/gens/test/predictions{}_{}.txt".format(seed, exp, midstr, step)
             opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, step)]
             opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-test-log.txt".format(seed, exp, midstr, step)
             tag = prepare_model(seed, exp, step//1000, avg, True)
