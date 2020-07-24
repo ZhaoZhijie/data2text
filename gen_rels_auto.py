@@ -82,6 +82,10 @@ def gen_rels(seeds, test=False):
             for pred_file in pred_files:
                 step = get_model_steps(pred_file)
                 preddata = "experiments/exp-seed-{}/exp-{}/gens/{}_ex/predictions{}_{}.h5".format(seed, exp, gen_folder, midstr, step)
+                tupfile = preddata+"-tuples.txt"
+                if os.path.exists(tupfile):
+                    logger.info("tuple file already exists:{}".format(tupfile))
+                    continue
                 sys.argv = [sys.argv[0], "-datafile", datafile, "-preddata", preddata, "-dict_pfx", dict_pfx, "-ignore_idx", str(ignore_idx), "-eval_models", eval_models, "-just_eval"]
                 if test:
                     sys.argv.append("-test")
