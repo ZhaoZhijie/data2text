@@ -208,7 +208,7 @@ if __name__ == "__main__":
         models_steps = best_models[exp]
         for step in models_steps:
             output = "experiments/exp-seed-{}/exp-{}/gens/test/predictions{}_{}.txt".format(seed, exp, midstr, step)
-            if os.path.exists(opt.output):
+            if os.path.exists(output):
                 logger.info("prediction already done for {}".format(output))
                 continue
             parser = _get_parser()
