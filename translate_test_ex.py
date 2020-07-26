@@ -6,6 +6,7 @@ import os
 from logger import logger
 import torch
 import re
+from exp_utils import prepare_common_model
 
 exps = ["S1D1","S1D2","S4D1","S4D2"]
 
@@ -30,15 +31,6 @@ def prepare_model(seed, exp, n, avg=False, last=False):
         return prepare_avg_model(seed, exp, n, last)
     else:
         return prepare_common_model(seed, exp, n)
-
-def prepare_common_model(seed, exp, n):
-    src = "/home/zzjstars/zj17501_drive/zjmodels/exp-seed-{}/exp-{}/models/model_step_{}.pt".format(seed, exp, n*1000)
-    tar_folder = "experiments/exp-seed-{}/exp-{}/models/".format(seed, exp)
-    logger.info("common model {}".format(src))
-    succs, fails = scp_files(src, tar_folder, get=True)
-    if len(succs) != 1:
-        return False
-    return True
 
 def prepare_avg_model(seed, exp, n, last=False):
     max_n = n
