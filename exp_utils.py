@@ -87,15 +87,15 @@ def get_exps(expstr):
 def get_continued_models(seeds, exps):
     for seed in seeds:
         for exp in exps:
-            step = 1000
+            step = 1
             if exp == "S1D1":
-                step = 20000
+                step = 20
             elif exp == "S1D2":
-                step = 19000
+                step = 19
             elif exp=="S4D1":
-                step = 15000
+                step = 15
             elif exp=="S4D2":
-                step = 14000
+                step = 14
             prepare_common_model(seed, exp, step)
 
 
