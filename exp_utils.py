@@ -1,6 +1,7 @@
 import os
 import re
 import argparse
+from logger import logger
 from cp import scp_files
 
 exps = ["S1D1", "S1D2", "S4D1", "S4D2"]
