@@ -62,9 +62,12 @@ def update_continued_train_cfg(seeds):
         for f in files:
             if "train_" in f:
                 path = os.path.join(folder, f)
+                exp = re.findall(r"S[0-9]D[0-9]", f)[0]
+                step = get_last_step(seed, exp)
                 with open(path, "r") as fi:
                     text = fi.read()
                     text = text.replace("\n#train_from", "\ntrain_from")
+                    text = re.sub(r"model_step_[0-9]+.pt", "model_step_{}.pt".format(step), text)
                     fi.close()
                     with open(path, "w") as fo:
                         fo.write(text)
