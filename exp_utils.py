@@ -89,7 +89,7 @@ def get_continued_models(seeds, exps):
     for seed in seeds:
         for exp in exps:
             step = get_last_step(seed, exp)
-            tag = prepare_common_model(seed, exp, step/1000)
+            tag = prepare_common_model(seed, exp, step//1000)
             path = "experiments/exp-seed-{}/exp-{}/models/model_step_{}".format(seed, exp, step)
             fw.write(path+"\n")
     fw.close()
