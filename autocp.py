@@ -14,7 +14,6 @@ def cp_models_generated(seeds=[]):
     if os.path.exists(continued_file):
         fp = open(continued_file, "r")
         continued = fp.read()
-    print("continued", continued)
     for seed in seeds:
         for exp in exps:
             folder = "experiments/exp-seed-{}/exp-{}/models".format(seed, exp)
