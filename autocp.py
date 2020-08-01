@@ -14,6 +14,7 @@ def cp_models_generated(seeds=[]):
     if os.path.exists(continued_file):
         fp = open(continued_file, "r")
         continued = fp.read()
+    print("continued", continued)
     for seed in seeds:
         for exp in exps:
             folder = "experiments/exp-seed-{}/exp-{}/models".format(seed, exp)
@@ -25,12 +26,13 @@ def cp_models_generated(seeds=[]):
                 for path in filepaths:
                     if path not in continued:
                         scppaths.append(path)
-                succs, fails = scp_files(scppaths, savepath)
-                for succ in succs:
-                    os.remove(succ)
-                    logger.info("remove model file{}".format(succ))
-                if fails:
-                    logger.info("copy failed {}".format(fails))
+                if scppaths:
+                    succs, fails = scp_files(scppaths, savepath)
+                    for succ in succs:
+                        os.remove(succ)
+                        logger.info("remove model file{}".format(succ))
+                    if fails:
+                        logger.info("copy failed {}".format(fails))
 
 def monitor(seeds):
     for i in range(200000):
@@ -40,6 +42,7 @@ def monitor(seeds):
 
 def get_seeds(seedstr):
     return [int(seed) for seed in seedstr.split(",")]
+
 
 seeds = get_seeds(sys.argv[1])
 monitor(seeds)
