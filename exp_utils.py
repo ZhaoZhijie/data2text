@@ -85,18 +85,15 @@ def get_exps(expstr):
     return [exp for exp in expstr.split(",")]
 
 def get_continued_models(seeds, exps):
+    fw = open("continued_models.txt", "a")
     for seed in seeds:
         for exp in exps:
-            step = 1
-            if exp == "S1D1":
-                step = 20
-            elif exp == "S1D2":
-                step = 19
-            elif exp=="S4D1":
-                step = 15
-            elif exp=="S4D2":
-                step = 14
-            prepare_common_model(seed, exp, step)
+            step = get_last_step(seed, exp)
+            prepare_common_model(seed, exp, step/1000)
+            path = "experiments/exp-seed-{}/exp-{}/models/model_step_{}".format(seed, exp, step)
+            fw.write(path+"\n")
+    fw.close()
+
 
 
 def prepare_common_model(seed, exp, n):
@@ -110,29 +107,47 @@ def prepare_common_model(seed, exp, n):
 
 
 
+def get_last_step(seed, exp):
+    log_folder = "logs/exp-seed-{}/".format(seed)
+    files = os.listdir(log_folder)
+    steps = []
+    for f in files:
+        if exp in f:
+            fpath = os.path.join(log_folder, f)
+            fp = open(fpath, "r")
+            text = fp.read()
+            steps += re.findall(r"Saving checkpoint experiments/exp-seed-[0-9]+/exp-S[0-9]D[0-9]/models/model_step_([0-9]+).pt",text)
+            fp.close()
+    if steps:
+        steps = [int(step) for step in steps]
+        steps.sort()
+        return steps[-1]
+    return 0
+
+get_continued_models([333],["S1D1","S1D2","S4D1","S4D2"])
 
 
+if __name__ == "__main__1":
+    parser = argparse.ArgumentParser(description='experiments utils')
+    parser.add_argument('-seeds', type=str, default="",
+                        help="random seeds for experiments to be config")
+    parser.add_argument('-type', type=str, default="", choices=['mkdirs', 'update_train', "contnued"],
+                        help="action type")
+    parser.add_argument('-exps', type=str, default="",
+                        help="experiments name")
+    args = parser.parse_args()
 
-parser = argparse.ArgumentParser(description='experiments utils')
-parser.add_argument('-seeds', type=str, default="",
-                    help="random seeds for experiments to be config")
-parser.add_argument('-type', type=str, default="", choices=['mkdirs', 'update_train', "contnued"],
-                    help="action type")
-parser.add_argument('-exps', type=str, default="",
-                    help="experiments name")
-args = parser.parse_args()
-
-seeds = get_seeds(args.seeds)
-if args.type == "mkdirs":
-    make_dirs(seeds)
-elif args.type == "update_train":
-    update_continued_train_cfg(seeds)
-elif args.type == "contnued":
-    if args.exps:
-        exps = get_exps(args.exps)
-    get_continued_models(seeds, exps)
-else:
-    print("action type error")
+    seeds = get_seeds(args.seeds)
+    if args.type == "mkdirs":
+        make_dirs(seeds)
+    elif args.type == "update_train":
+        update_continued_train_cfg(seeds)
+    elif args.type == "contnued":
+        if args.exps:
+            exps = get_exps(args.exps)
+        get_continued_models(seeds, exps)
+    else:
+        print("action type error")
 
 
 
