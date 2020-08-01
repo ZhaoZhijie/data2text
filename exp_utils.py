@@ -89,7 +89,7 @@ def get_continued_models(seeds, exps):
     for seed in seeds:
         for exp in exps:
             step = get_last_step(seed, exp)
-            prepare_common_model(seed, exp, step/1000)
+            tag = prepare_common_model(seed, exp, step/1000)
             path = "experiments/exp-seed-{}/exp-{}/models/model_step_{}".format(seed, exp, step)
             fw.write(path+"\n")
     fw.close()
@@ -118,11 +118,16 @@ def get_last_step(seed, exp):
             text = fp.read()
             steps += re.findall(r"Saving checkpoint experiments/exp-seed-[0-9]+/exp-S[0-9]D[0-9]/models/model_step_([0-9]+).pt",text)
             fp.close()
+    step = 0
     if steps:
         steps = [int(step) for step in steps]
         steps.sort()
-        return steps[-1]
-    return 0
+        step = steps[-1]
+        if step > 18000 and "S4" in exp:
+            step = 0
+        if step > 23000 and "S1" in exp:
+            step = 0
+    return step
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='experiments utils')
