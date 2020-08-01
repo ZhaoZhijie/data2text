@@ -124,10 +124,7 @@ def get_last_step(seed, exp):
         return steps[-1]
     return 0
 
-get_continued_models([333],["S1D1","S1D2","S4D1","S4D2"])
-
-
-if __name__ == "__main__1":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='experiments utils')
     parser.add_argument('-seeds', type=str, default="",
                         help="random seeds for experiments to be config")
