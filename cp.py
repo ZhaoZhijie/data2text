@@ -4,7 +4,7 @@ import os
 import sys
 from logger import logger
 
-HOST = "34.89.57.100"
+HOST = "35.189.123.190"
 PORT = 22
 USER = "root"
 PASS = "zzj5418245"
