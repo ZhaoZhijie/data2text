@@ -17,7 +17,7 @@ def cp_models_generated(seeds=[]):
     for seed in seeds:
         for exp in exps:
             folder = "experiments/exp-seed-{}/exp-{}/models".format(seed, exp)
-            savepath = "/home/zzjstars/zj17501_drive/zjmodels/exp-seed-{}/exp-{}/models/".format(seed, exp)
+            savepath = "/home/zzjstars/zj17501_disk/zjmodels/exp-seed-{}/exp-{}/models/".format(seed, exp)
             files = os.listdir(folder)
             if files:
                 filepaths = [os.path.join(folder, file) for file in files]

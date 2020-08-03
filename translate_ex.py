@@ -28,7 +28,7 @@ def prepare_model(seed, exp, n, avg=False, last=False):
         return prepare_common_model(seed, exp, n)
 
 def prepare_common_model(seed, exp, n):
-    src = "/home/zzjstars/zj17501_drive/zjmodels/exp-seed-{}/exp-{}/models/model_step_{}.pt".format(seed, exp, n*1000)
+    src = "/home/zzjstars/zj17501_disk/zjmodels/exp-seed-{}/exp-{}/models/model_step_{}.pt".format(seed, exp, n*1000)
     tar_folder = "experiments/exp-seed-{}/exp-{}/models/".format(seed, exp)
     logger.info("common model {}".format(src))
     succs, fails = scp_files(src, tar_folder, get=True)
@@ -43,7 +43,7 @@ def prepare_avg_model(seed, exp, n, last=False):
         min_n = 1
     src_models = []
     tar_folder = "experiments/exp-seed-{}/exp-{}/models/".format(seed, exp)
-    src_folder = "/home/zzjstars/zj17501_drive/zjmodels/exp-seed-{}/exp-{}/models/".format(seed, exp)
+    src_folder = "/home/zzjstars/zj17501_disk/zjmodels/exp-seed-{}/exp-{}/models/".format(seed, exp)
     merged = []
     for i in range(min_n, max_n+1):
         steps = i*1000

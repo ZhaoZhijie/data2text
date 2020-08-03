@@ -100,7 +100,7 @@ def get_continued_models(seeds, exps):
 
 
 def prepare_common_model(seed, exp, n):
-    src = "/home/zzjstars/zj17501_drive/zjmodels/exp-seed-{}/exp-{}/models/model_step_{}.pt".format(seed, exp, n*1000)
+    src = "/home/zzjstars/zj17501_disk/zjmodels/exp-seed-{}/exp-{}/models/model_step_{}.pt".format(seed, exp, n*1000)
     tar_folder = "experiments/exp-seed-{}/exp-{}/models/".format(seed, exp)
     logger.info("common model {}".format(src))
     succs, fails = scp_files(src, tar_folder, get=True)
