@@ -4,10 +4,10 @@ import os
 import sys
 from logger import logger
 
-HOST = "35.189.123.190"
+HOST = "34.89.57.100"
 PORT = 22
 USER = "root"
-PASS = "17951"
+PASS = "zzj5418245"
 
 def scp_files(src_path, tar_path, get=False):
     ssh_client = paramiko.SSHClient()
