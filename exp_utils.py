@@ -64,10 +64,12 @@ def update_continued_train_cfg(seeds):
                 path = os.path.join(folder, f)
                 exp = re.findall(r"S[0-9]D[0-9]", f)[0]
                 step = get_last_step(seed, exp)
+                max_step = 36000 if "S1" in exp else 27000
                 with open(path, "r") as fi:
                     text = fi.read()
                     text = text.replace("\n#train_from", "\ntrain_from")
                     text = re.sub(r"model_step_[0-9]+.pt", "model_step_{}.pt".format(step), text)
+                    text = re.sub(r"train_steps: [0-9]+", "train_steps: {}".format(max_step), text)
                     fi.close()
                     with open(path, "w") as fo:
                         fo.write(text)
