@@ -128,10 +128,10 @@ def get_last_step(seed, exp):
         steps = [int(step) for step in steps]
         steps.sort()
         step = steps[-1]
-        if step > 18000 and "S4" in exp:
-            step = 0
-        if step > 23000 and "S1" in exp:
-            step = 0
+        # if step > 18000 and "S4" in exp:
+        #     step = 0
+        # if step > 23000 and "S1" in exp:
+        #     step = 0
     return step
 
 if __name__ == "__main__":
