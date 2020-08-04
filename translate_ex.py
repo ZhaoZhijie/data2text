@@ -111,10 +111,12 @@ if __name__ == "__main__":
     logger.info("seed-{} exp-{} start-{} end-{}".format(seed, exp, start, end))
     midstr = "_avg" if avg else ""
     gens = "test" if test else "valid"
+    data = "test" if test else "validation"
     for i in range(start, end+1):
         steps = i*1000
         parser = _get_parser()
         opt = parser.parse_args()
+        opt.src = "data/{}_{}_data.txt".format(exp if "S4" in exp else exp[2:4], data)
         opt.output = "experiments/exp-seed-{}/exp-{}/gens/{}/predictions{}_{}.txt".format(seed, exp, gens, midstr, steps)
         opt.models = ["experiments/exp-seed-{}/exp-{}/models/model{}_step_{}.pt".format(seed, exp, midstr, steps)]
         opt.log_file = "experiments/exp-seed-{}/exp-{}/translation{}-log.txt".format(seed, exp, midstr, steps)
