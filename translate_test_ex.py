@@ -222,7 +222,6 @@ if __name__ == "__main__":
                 clear_translate_model(seed, exp, step//1000, avg)
             else:
                 logger.info("translate error step={}".format(step))
-            break
 
 
 
